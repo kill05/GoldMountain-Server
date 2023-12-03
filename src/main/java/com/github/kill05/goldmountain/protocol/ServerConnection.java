@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ServerConnection {
 
-    public static final int PORT = 5576;
+    public static final int PORT = 5575;
     public static final short MAGIC_BYTES = 0x1764;
 
     private final GMServer server;
