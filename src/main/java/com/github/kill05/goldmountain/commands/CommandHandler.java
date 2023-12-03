@@ -1,10 +1,7 @@
 package com.github.kill05.goldmountain.commands;
 
 import com.github.kill05.goldmountain.GMServer;
-import com.github.kill05.goldmountain.commands.registered.LogLastUpdateCommand;
-import com.github.kill05.goldmountain.commands.registered.TestCommand;
-import com.github.kill05.goldmountain.commands.registered.TeleportCommand;
-import com.github.kill05.goldmountain.commands.registered.TpsCommand;
+import com.github.kill05.goldmountain.commands.registered.*;
 import org.apache.commons.lang3.Validate;
 
 import java.io.BufferedReader;
@@ -30,6 +27,7 @@ public class CommandHandler implements Runnable {
         registerCommand(new LogLastUpdateCommand(server));
         registerCommand(new TeleportCommand(server));
         registerCommand(new TestCommand(server));
+        registerCommand(new DecodeLocationCommand());
     }
 
 
