@@ -3,13 +3,13 @@ package com.github.kill05.goldmountain.protocol.pipeline;
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 import com.github.kill05.goldmountain.protocol.ServerConnection;
+import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.PacketUtils;
 import com.github.kill05.goldmountain.protocol.packets.TestPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import com.github.kill05.goldmountain.protocol.packets.Packet;
 
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
@@ -34,6 +34,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
             packet.encode(serializer);
 
             // replace bytes 2 and 3 with length
+            serializer.writeByte(0x00);
             serializer.setShort(2, PacketUtils.getEncodedPacketLength(serializer));
         } catch (Exception e) {
             GMServer.logger.warn("Failed to encode packet.", e);

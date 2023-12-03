@@ -17,7 +17,6 @@ public class PacketOutDimension implements Packet {
     @Override
     public void encode(PacketSerializer serializer) {
         serializer.writeByte(dimensionId);
-        serializer.writeByte(0x00);
     }
 
     @Override

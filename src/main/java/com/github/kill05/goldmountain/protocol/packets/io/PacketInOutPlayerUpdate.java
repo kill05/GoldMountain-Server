@@ -51,7 +51,6 @@ public class PacketInOutPlayerUpdate implements Packet {
         serializer.writeByte(0x0d);
         serializer.writeByte(clock);
         serializer.writeShort(unknown_2);
-        serializer.writeByte(0x00);
     }
 
     @Override
