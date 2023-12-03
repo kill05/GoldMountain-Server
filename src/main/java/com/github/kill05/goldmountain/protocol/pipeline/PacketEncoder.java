@@ -7,11 +7,9 @@ import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.PacketUtils;
 import com.github.kill05.goldmountain.protocol.packets.TestPacket;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
-import org.apache.commons.codec.binary.Hex;
 
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
@@ -24,12 +22,15 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) {
         try {
-            int id = packetRegistry.getRegistered(packet.getClass()).getId();
-
             PacketSerializer serializer = new PacketSerializer(byteBuf);
             serializer.writeShort(ServerConnection.MAGIC_BYTES);
             serializer.writeInt(0x0000_0000); // first 2 bytes will be replaced with length
-            serializer.writeByte(id);
+
+            if(!(packet instanceof TestPacket)) {
+                int id = packetRegistry.getPacket(packet.getClass()).getId();
+                serializer.writeByte(id);
+            }
+
             packet.encode(serializer);
 
             // replace bytes 2 and 3 with length

@@ -35,9 +35,10 @@ public class PacketDecoder extends ByteToMessageDecoder {
 
         if(byteBuf.readableBytes() < length) return;
 
-        Packet packet = connection.getPacketRegistry().createPacket(id);
+        Packet packet = connection.getPacketRegistry().createInboundPacket(id);
         if(packet != null) {
-            packet.decode(new PacketSerializer(byteBuf.slice(7, length)));
+            PacketSerializer serializer = new PacketSerializer(byteBuf.slice(7, length - 7));
+            packet.decode(serializer);
             out.add(packet);
         }
 
