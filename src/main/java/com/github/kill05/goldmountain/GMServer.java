@@ -16,7 +16,7 @@ public class GMServer {
     private Thread serverThread;
     private ServerConnection serverConnection;
     private CommandHandler commandHandler;
-    private int currentTick;
+    private long currentTick;
     private float tps;
 
     public GMServer() {
@@ -126,7 +126,7 @@ public class GMServer {
         return commandHandler;
     }
 
-    public int getCurrentTick() {
+    public long getCurrentTick() {
         return currentTick;
     }
 
