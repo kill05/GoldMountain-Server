@@ -53,6 +53,7 @@ public class ServerConnection {
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.TCP_NODELAY, true)
                 .bind(PORT).channel();
     }
 
