@@ -5,6 +5,7 @@ import com.github.kill05.goldmountain.protocol.ServerConnection;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutDimension;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutDimensionData;
+import com.github.kill05.goldmountain.protocol.packets.out.PacketOutStaircaseLocation;
 
 import java.util.*;
 
@@ -23,6 +24,7 @@ public class PacketRegistry {
 
         register(0x04, PacketOutDimension.class, PacketDirection.OUTBOUND);
         register(0x05, PacketOutDimensionData.class, PacketDirection.OUTBOUND);
+        register(0x06, PacketOutStaircaseLocation.class, PacketDirection.OUTBOUND);
 
         //register(0x34, PacketInPlayerUpdate.class);
         //register(0x55, PacketInPlayerAndCloneUpdate.class);
