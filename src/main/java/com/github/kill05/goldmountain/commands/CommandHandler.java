@@ -46,6 +46,7 @@ public class CommandHandler implements Runnable {
     public void processInput() {
         for(String input : inputBuffer) {
             if (input == null || input.isBlank()) continue;
+            input = input.trim();
 
             if (input.startsWith("/")) input = input.substring(1);
             String[] strings = input.split("\\s+");
