@@ -4,6 +4,7 @@ import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.ServerConnection;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
+import com.github.kill05.goldmountain.protocol.packets.out.PacketOutAssignPlayerId;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -38,7 +39,7 @@ public class PacketHandler extends ChannelDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         GMServer.logger.info(String.format("Player (ip: %s) disconnected.", ctx.channel().remoteAddress()));
-
+        connection.sendPacket(new PacketOutAssignPlayerId(0x01));
         super.channelInactive(ctx);
     }
 

@@ -13,12 +13,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
-    private final PacketRegistry packetRegistry;
-
-    public PacketEncoder(PacketRegistry packetRegistry) {
-        this.packetRegistry = packetRegistry;
-    }
-
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) {
         try {
@@ -27,13 +21,13 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
             serializer.writeInt(0x0000_0000); // first 2 bytes will be replaced with length
 
             if(!(packet instanceof TestPacket)) {
-                int id = packetRegistry.getPacket(packet.getClass()).getId();
+                int id = PacketRegistry.instance().getPacket(packet.getClass()).getId();
                 serializer.writeByte(id);
             }
 
             packet.encode(serializer);
 
-            // replace bytes 2 and 3 with length
+            // add 0x00 to the end and replace bytes 2 and 3 with packet length
             serializer.writeByte(0x00);
             serializer.setShort(2, PacketUtils.getEncodedPacketLength(serializer));
         } catch (Exception e) {

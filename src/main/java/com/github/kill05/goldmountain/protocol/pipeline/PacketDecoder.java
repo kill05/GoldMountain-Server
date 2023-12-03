@@ -4,6 +4,7 @@ import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 import com.github.kill05.goldmountain.protocol.ServerConnection;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
+import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.PacketUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -13,12 +14,6 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import java.util.List;
 
 public class PacketDecoder extends ByteToMessageDecoder {
-
-    private final ServerConnection connection;
-
-    public PacketDecoder(ServerConnection connection) {
-        this.connection = connection;
-    }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
@@ -35,7 +30,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
 
         if(byteBuf.readableBytes() < length) return;
 
-        Packet packet = connection.getPacketRegistry().createInboundPacket(id);
+        Packet packet = PacketRegistry.instance().createInboundPacket(id);
         if(packet != null) {
             PacketSerializer serializer = new PacketSerializer(byteBuf.slice(7, length - 7));
             packet.decode(serializer);

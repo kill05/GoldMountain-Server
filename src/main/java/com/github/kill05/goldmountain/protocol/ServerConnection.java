@@ -32,8 +32,8 @@ public class ServerConnection {
 
     public ServerConnection(GMServer server) {
         this.server = server;
-        this.packetRegistry = new PacketRegistry(this);
         this.clientChannels = Lists.newArrayList();
+        this.packetRegistry = PacketRegistry.instance();
 
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
@@ -44,8 +44,8 @@ public class ServerConnection {
                     @Override
                     protected void initChannel(Channel channel) {
                         channel.pipeline()
-                                .addLast("splitter", new PacketDecoder(ServerConnection.this))
-                                .addLast("packet_encoder", new PacketEncoder(packetRegistry))
+                                .addLast("packet_splitter", new PacketDecoder())
+                                .addLast("packet_encoder", new PacketEncoder())
                                 .addLast("packet_handler", new PacketHandler(ServerConnection.this));
 
                         clientChannels.add(channel);

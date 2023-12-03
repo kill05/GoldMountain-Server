@@ -1,8 +1,8 @@
 package com.github.kill05.goldmountain.protocol.packets;
 
 import com.github.kill05.goldmountain.GMServer;
-import com.github.kill05.goldmountain.protocol.ServerConnection;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
+import com.github.kill05.goldmountain.protocol.packets.out.PacketOutAssignPlayerId;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutDimension;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutDimensionData;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutStaircaseLocation;
@@ -11,12 +11,12 @@ import java.util.*;
 
 public class PacketRegistry {
 
-    private final ServerConnection serverConnection;
+    private static PacketRegistry instance;
     private final Map<Integer, RegisteredPacket> inboundPacketIdMap;
     private final Map<Class<? extends Packet>, RegisteredPacket> packetClassMap;
 
-    public PacketRegistry(ServerConnection serverConnection) {
-        this.serverConnection = serverConnection;
+
+    private PacketRegistry() {
         this.inboundPacketIdMap = new HashMap<>();
         this.packetClassMap = new HashMap<>();
 
@@ -25,13 +25,14 @@ public class PacketRegistry {
         register(0x04, PacketOutDimension.class, PacketDirection.OUTBOUND);
         register(0x05, PacketOutDimensionData.class, PacketDirection.OUTBOUND);
         register(0x06, PacketOutStaircaseLocation.class, PacketDirection.OUTBOUND);
-
-        //register(0x34, PacketInPlayerUpdate.class);
-        //register(0x55, PacketInPlayerAndCloneUpdate.class);
-
-        //register(0x09, PacketOutDimension.class);
-        //register(0x5d, PacketOutServerPlayerUpdate.class);
+        register(0x07, PacketOutAssignPlayerId.class, PacketDirection.OUTBOUND);
     }
+
+
+    public static PacketRegistry instance() {
+        return instance == null ? (instance = new PacketRegistry()) : instance;
+    }
+
 
     private <T extends Packet> void register(int id, Class<T> packetClass, PacketDirection direction) {
         try {
@@ -77,10 +78,6 @@ public class PacketRegistry {
         RegisteredPacket packet = getPacket(clazz);
         if(packet != null) return packet.constructPacket();
         return null;
-    }
-
-    public ServerConnection getServerConnection() {
-        return serverConnection;
     }
 
 }
