@@ -13,7 +13,7 @@ public class TestPacket implements Packet {
 
     public TestPacket(String hex) {
         try {
-            this.bytes = Hex.decodeHex(hex);
+            this.bytes = Hex.decodeHex(hex.replaceAll("\\s", ""));
         } catch (DecoderException e) {
             throw new RuntimeException(e);
         }
