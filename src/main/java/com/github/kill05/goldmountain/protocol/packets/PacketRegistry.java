@@ -2,11 +2,9 @@ package com.github.kill05.goldmountain.protocol.packets;
 
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.ServerConnection;
-import com.github.kill05.goldmountain.protocol.packets.in.PacketInPlayerAndCloneUpdate;
-import com.github.kill05.goldmountain.protocol.packets.in.PacketInPlayerUpdate;
+import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutDimension;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutDimensionData;
-import com.github.kill05.goldmountain.protocol.packets.out.PacketOutServerPlayerUpdate;
 
 import java.util.*;
 
@@ -21,7 +19,7 @@ public class PacketRegistry {
         this.packetIdMap = new HashMap<>();
         this.packetClassMap = new HashMap<>();
 
-        register(0x01, PacketInPlayerUpdate.class);
+        register(0x01, PacketInOutPlayerUpdate.class);
 
         register(0x04, PacketOutDimension.class);
         register(0x05, PacketOutDimensionData.class);
