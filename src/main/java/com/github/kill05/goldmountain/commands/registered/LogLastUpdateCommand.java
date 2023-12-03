@@ -5,26 +5,24 @@ import com.github.kill05.goldmountain.commands.Command;
 import com.github.kill05.goldmountain.commands.senders.CommandSender;
 import com.github.kill05.goldmountain.player.PlayerAction;
 import com.github.kill05.goldmountain.protocol.enums.IdentifiableEnumHelper;
-import com.github.kill05.goldmountain.protocol.packets.in.PacketInPlayerUpdate;
-import org.apache.commons.codec.binary.Hex;
+import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import org.joml.Vector2f;
 
-public class LogLastUpdate extends Command {
+public class LogLastUpdateCommand extends Command {
 
     private final GMServer server;
 
-    public LogLastUpdate(GMServer server) {
+    public LogLastUpdateCommand(GMServer server) {
         super("log");
         this.server = server;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PacketInPlayerUpdate lastUpdate = server.getConnection().lastUpdate;
+        PacketInOutPlayerUpdate lastUpdate = server.getConnection().lastUpdate;
         System.out.println("=======================================================================================");
-        logPacket("unknown:      ", lastUpdate.getUnknown_0_3());
-        logPacket("0xfeff:       ", lastUpdate.getUnknown_4_5());
-        logPacket("account data: ", lastUpdate.getAccountData());
+        logPacket("player id:    ", lastUpdate.getPlayerId());
+        logPacket("metadata:     ", lastUpdate.getMetadata());
         logPacket("prev position:", lastUpdate.getCurrentPos());
         logPacket("position 2:   ", lastUpdate.getFuturePos());
         logPacket("position 3:   ", lastUpdate.getLocation3());
@@ -32,8 +30,7 @@ public class LogLastUpdate extends Command {
         logPacket("data:         ", lastUpdate.getYaw());
         logPacket("action info:  ", IdentifiableEnumHelper.fromId(PlayerAction.class, lastUpdate.getCurrentAction()));
         logPacket("costume:      ", lastUpdate.getCostume());
-        logPacket("breaking info:", lastUpdate.getUnknown_34_37());
-        System.out.println("raw data: " + Hex.encodeHexString(lastUpdate.getBytes()));
+        logPacket("breaking info:", lastUpdate.getUnknown_1());
         System.out.println("=======================================================================================");
     }
 

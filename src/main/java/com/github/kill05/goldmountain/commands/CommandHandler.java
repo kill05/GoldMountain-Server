@@ -1,9 +1,11 @@
 package com.github.kill05.goldmountain.commands;
 
 import com.github.kill05.goldmountain.GMServer;
-import com.github.kill05.goldmountain.commands.registered.LogLastUpdate;
+import com.github.kill05.goldmountain.commands.registered.LogLastUpdateCommand;
+import com.github.kill05.goldmountain.commands.registered.TestCommand;
 import com.github.kill05.goldmountain.commands.registered.TeleportCommand;
 import com.github.kill05.goldmountain.commands.registered.TpsCommand;
+import org.apache.commons.lang3.Validate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,13 +27,19 @@ public class CommandHandler implements Runnable {
         readerThread.start();
 
         registerCommand(new TpsCommand(server));
-        registerCommand(new LogLastUpdate(server));
-        registerCommand(new TeleportCommand(server.getConnection()));
+        registerCommand(new LogLastUpdateCommand(server));
+        registerCommand(new TeleportCommand(server));
+        registerCommand(new TestCommand(server));
     }
 
 
     public void registerCommand(Command command) {
+        Validate.notNull(command, "Command can't be null.");
+
         for(String name : command.getNames()) {
+            if(commandMap.containsKey(name)) {
+                throw new IllegalArgumentException(String.format("Duplicate command name: %s. (Command: %s)", name, command.getClass()));
+            }
             commandMap.put(name, command);
         }
     }

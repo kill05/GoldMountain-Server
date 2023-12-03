@@ -1,19 +1,19 @@
 package com.github.kill05.goldmountain.commands.registered;
 
+import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.commands.Command;
 import com.github.kill05.goldmountain.commands.senders.CommandSender;
 import com.github.kill05.goldmountain.dimension.DimensionType;
-import com.github.kill05.goldmountain.protocol.ServerConnection;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutDimension;
 import org.apache.commons.lang3.EnumUtils;
 
 public class TeleportCommand extends Command {
 
-    private final ServerConnection serverConnection;
+    private final GMServer server;
 
-    public TeleportCommand(ServerConnection serverConnection) {
+    public TeleportCommand(GMServer server) {
         super("teleport", "dimension", "tp", "dim");
-        this.serverConnection = serverConnection;
+        this.server = server;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class TeleportCommand extends Command {
             return;
         }
 
-        serverConnection.sendPacket(new PacketOutDimension(id.byteValue()));
+        server.getConnection().sendPacket(new PacketOutDimension(id.byteValue()));
         sender.sendMessage(String.format("Teleported to dimension '%s'.", id));
     }
 
