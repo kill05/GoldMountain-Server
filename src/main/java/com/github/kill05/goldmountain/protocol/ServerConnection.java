@@ -30,7 +30,7 @@ public class ServerConnection {
 
     public PacketInOutPlayerUpdate lastUpdate;
 
-    public ServerConnection(GMServer server) throws Exception {
+    public ServerConnection(GMServer server) {
         this.server = server;
         this.packetRegistry = new PacketRegistry(this);
         this.clientChannels = Lists.newArrayList();
