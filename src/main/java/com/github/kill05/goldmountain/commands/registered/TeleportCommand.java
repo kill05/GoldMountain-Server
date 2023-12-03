@@ -44,8 +44,8 @@ public class TeleportCommand extends Command {
 
         ServerConnection connection = server.getConnection();
         connection.sendPacket(new PacketOutDimension(id.byteValue()));
-        connection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0080 0061 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
-        connection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0080 0061 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
+        //connection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0080 0061 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
+        //connection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0080 0061 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
 
         sender.sendMessage(String.format("Teleported to dimension '%s'.", id));
     }
