@@ -27,27 +27,12 @@ public class PacketSerializer extends ByteBuf implements AutoCloseable {
 
 
     public Vector2f readLocation() {
-        byte x = byteBuf.readByte();
-        byte cx = byteBuf.readByte();
-
-        byte y = byteBuf.readByte();
-        byte cy = byteBuf.readByte();
-
-        short sx = (short) (((cx & 0xFF) << 8) | (x & 0xFF));
-        short sy = (short) (((cy & 0xFF) << 8) | (y & 0xFF));
-
-        return new Vector2f(sx / TILE_SIZE, sy / TILE_SIZE);
+        return new Vector2f(byteBuf.readShortLE() / TILE_SIZE, byteBuf.readShortLE() / TILE_SIZE);
     }
     
     public void writeLocation(Vector2f location) {
-        short x = (short) (location.x * TILE_SIZE);
-        short y = (short) (location.y * TILE_SIZE);
-
-        byteBuf.writeByte((byte) x);
-        byteBuf.writeByte((byte) (x >> 8));
-
-        byteBuf.writeByte((byte) y);
-        byteBuf.writeByte((byte) (y >> 8));
+        byteBuf.writeShortLE((int) (location.x * TILE_SIZE));
+        byteBuf.writeShortLE((int) (location.y * TILE_SIZE));
     }
 
 
@@ -1050,6 +1035,7 @@ public class PacketSerializer extends ByteBuf implements AutoCloseable {
         return byteBuf.hashCode();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         return byteBuf.equals(o);
