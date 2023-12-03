@@ -2,7 +2,7 @@ package com.github.kill05.goldmountain.protocol;
 
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
-import com.github.kill05.goldmountain.protocol.packets.in.PacketInPlayerUpdate;
+import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketEncoder;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketDecoder;
 import com.google.common.collect.Lists;
@@ -28,7 +28,7 @@ public class ServerConnection {
     private final EventLoopGroup bossGroup;
     private final EventLoopGroup workerGroup;
 
-    public PacketInPlayerUpdate lastUpdate;
+    public PacketInOutPlayerUpdate lastUpdate;
 
     public ServerConnection(GMServer server) throws Exception {
         this.server = server;
@@ -43,8 +43,6 @@ public class ServerConnection {
                 .childHandler(new ChannelInitializer<>() {
                     @Override
                     protected void initChannel(Channel channel) {
-                        //channel.config().setOption(ChannelOption.TCP_NODELAY, true);
-
                         channel.pipeline()
                                 .addLast("splitter", new PacketDecoder(ServerConnection.this))
                                 .addLast("packet_encoder", new PacketEncoder(packetRegistry))
