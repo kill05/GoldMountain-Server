@@ -28,7 +28,6 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
             packet.encode(serializer);
 
             // add 0x00 to the end and replace bytes 2 and 3 with packet length
-            serializer.writeByte(0x00);
             serializer.setShort(2, PacketUtils.getEncodedPacketLength(serializer));
         } catch (Exception e) {
             GMServer.logger.warn("Failed to encode packet.", e);

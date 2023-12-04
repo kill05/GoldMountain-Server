@@ -22,7 +22,7 @@ public class PacketOutStaircaseLocation implements Packet {
     @Override
     public void encode(PacketSerializer serializer) {
         serializer.writeLocation(location);
-        serializer.writeByte(dimensionType.getId());
+        serializer.writeShortLE(dimensionType.getId());
     }
 
     @Override
