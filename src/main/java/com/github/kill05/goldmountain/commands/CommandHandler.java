@@ -44,31 +44,33 @@ public class CommandHandler implements Runnable {
 
 
     public void processInput() {
-        for(String input : inputBuffer) {
-            if (input == null || input.isBlank()) continue;
-            input = input.trim();
+        synchronized (inputBuffer) {
+            for (String input : inputBuffer) {
+                if (input == null || input.isBlank()) continue;
+                input = input.trim();
 
-            if (input.startsWith("/")) input = input.substring(1);
-            String[] strings = input.split("\\s+");
-            if (strings.length == 0) continue;
+                if (input.startsWith("/")) input = input.substring(1);
+                String[] strings = input.split("\\s+");
+                if (strings.length == 0) continue;
 
-            String name = strings[0];
-            String[] args = Arrays.copyOfRange(strings, 1, strings.length);
+                String name = strings[0];
+                String[] args = Arrays.copyOfRange(strings, 1, strings.length);
 
-            Command command = commandMap.get(name);
-            if(command == null) {
-                GMServer.logger.info(String.format("Unknown command: '%s'.", name));
-                continue;
+                Command command = commandMap.get(name);
+                if (command == null) {
+                    GMServer.logger.info(String.format("Unknown command: '%s'.", name));
+                    continue;
+                }
+
+                try {
+                    command.execute(GMServer.logger::info, args);
+                } catch (Throwable e) {
+                    GMServer.logger.warn("An error occurred while executing a command.", e);
+                }
             }
 
-            try {
-                command.execute(GMServer.logger::info, args);
-            } catch (Throwable e) {
-                GMServer.logger.warn("An error occurred while executing a command.", e);
-            }
+            inputBuffer.clear();
         }
-
-        inputBuffer.clear();
     }
 
     @Override
@@ -78,7 +80,10 @@ public class CommandHandler implements Runnable {
         while (true) {
             try {
                 String line = reader.readLine();
-                inputBuffer.add(line);
+
+                synchronized (inputBuffer) {
+                    inputBuffer.add(line);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
