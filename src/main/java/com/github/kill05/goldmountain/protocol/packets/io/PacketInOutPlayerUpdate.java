@@ -33,7 +33,7 @@ public class PacketInOutPlayerUpdate implements Packet {
 
     @Override
     public void encode(PacketSerializer serializer) {
-        serializer.writeShort(playerId);
+        serializer.writeShortLE(playerId);
         serializer.writeInt(metadata);
 
         serializer.writeLocation(currentPos);
