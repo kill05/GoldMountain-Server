@@ -10,7 +10,7 @@ import org.joml.Vector2f;
 public class PacketInOutPlayerUpdate implements Packet {
 
     private short playerId;
-    private int metadata;
+    private int level;
 
     private Vector2f currentPos;
     private Vector2f futurePos;
@@ -34,7 +34,7 @@ public class PacketInOutPlayerUpdate implements Packet {
     @Override
     public void encode(PacketSerializer serializer) {
         serializer.writeShortLE(playerId);
-        serializer.writeInt(metadata);
+        serializer.writeIntLE(level);
 
         serializer.writeLocation(currentPos);
         serializer.writeLocation(futurePos);
@@ -56,8 +56,8 @@ public class PacketInOutPlayerUpdate implements Packet {
 
     @Override
     public void decode(PacketSerializer serializer) {
-        playerId = serializer.readShort();
-        metadata = serializer.readInt();
+        playerId = serializer.readShortLE();
+        level = serializer.readIntLE();
 
         currentPos = serializer.readLocation();
         futurePos = serializer.readLocation();
@@ -84,12 +84,12 @@ public class PacketInOutPlayerUpdate implements Packet {
         this.playerId = playerId;
     }
 
-    public int getMetadata() {
-        return metadata;
+    public int getLevel() {
+        return level;
     }
 
-    public void setMetadata(int metadata) {
-        this.metadata = metadata;
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public Vector2f getCurrentPos() {
