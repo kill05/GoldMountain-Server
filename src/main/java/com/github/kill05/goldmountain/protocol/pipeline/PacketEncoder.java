@@ -6,8 +6,9 @@ import com.github.kill05.goldmountain.protocol.ServerConnection;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.PacketUtils;
-import com.github.kill05.goldmountain.protocol.packets.TestPacket;
+import com.github.kill05.goldmountain.protocol.packets.UnregisteredPacket;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
@@ -17,10 +18,11 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) {
         try {
             PacketSerializer serializer = new PacketSerializer(byteBuf);
+            boolean registered = !(packet instanceof UnregisteredPacket);
             serializer.writeShort(ServerConnection.MAGIC_BYTES);
             serializer.writeInt(0x0000_0000); // first 2 bytes will be replaced with length
 
-            if(!(packet instanceof TestPacket)) {
+            if(registered) {
                 int id = PacketRegistry.instance().getPacket(packet.getClass()).getId();
                 serializer.writeByte(id);
             }

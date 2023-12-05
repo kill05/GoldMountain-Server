@@ -4,7 +4,7 @@ import com.github.kill05.goldmountain.protocol.PacketSerializer;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
-public class TestPacket implements Packet {
+public class TestPacket implements UnregisteredPacket {
 
     private byte[] bytes;
 
