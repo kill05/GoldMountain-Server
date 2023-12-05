@@ -33,13 +33,13 @@ public class PacketHandler extends ChannelDuplexHandler {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         GMServer.logger.info(String.format("Player (ip: %s) connected.", ctx.channel().remoteAddress()));
+        connection.sendPacket(new PacketOutAssignPlayerId(0x0001));
         super.channelActive(ctx);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         GMServer.logger.info(String.format("Player (ip: %s) disconnected.", ctx.channel().remoteAddress()));
-        connection.sendPacket(new PacketOutAssignPlayerId(0x01));
         super.channelInactive(ctx);
     }
 
