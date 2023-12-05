@@ -8,7 +8,6 @@ import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.PacketUtils;
 import com.github.kill05.goldmountain.protocol.packets.UnregisteredPacket;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
@@ -28,9 +27,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
             }
 
             packet.encode(serializer);
-
-            // add 0x00 to the end and replace bytes 2 and 3 with packet length
-            serializer.setShort(2, PacketUtils.getEncodedPacketLength(serializer));
+            PacketUtils.encodePacketLength(serializer);
         } catch (Exception e) {
             GMServer.logger.warn("Failed to encode packet.", e);
         }
