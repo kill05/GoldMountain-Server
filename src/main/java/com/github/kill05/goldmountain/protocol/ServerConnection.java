@@ -57,9 +57,13 @@ public class ServerConnection {
                 .bind(PORT).channel();
     }
 
-    public void shutdownNow() throws InterruptedException {
-        bossGroup.shutdownGracefully().sync();
-        workerGroup.shutdownGracefully().sync();
+    public void shutdown() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(2);
+
+        bossGroup.shutdownGracefully().addListener(future -> latch.countDown());
+        workerGroup.shutdownGracefully().addListener(future -> latch.countDown());
+
+        latch.await();
     }
 
 

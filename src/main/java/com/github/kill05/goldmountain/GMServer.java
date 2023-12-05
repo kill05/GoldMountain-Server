@@ -42,6 +42,8 @@ public class GMServer {
         }, "Server Thread");
 
         serverThread.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
 
     private void startGameLoop() {
@@ -108,9 +110,16 @@ public class GMServer {
     }
 
 
-    public void shutdown() throws InterruptedException {
-        logger.info("Shutting down...");
-        serverConnection.shutdownNow();
+    public void shutdown() {
+        logger.info("Closing server...");
+
+        try {
+            serverConnection.shutdown();
+        } catch (InterruptedException e) {
+            logger.warn("Failed to gracefully shutdown server.", e);
+        }
+
+        logger.info("Bye!");
     }
 
 
