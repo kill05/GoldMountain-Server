@@ -16,7 +16,7 @@ public class PacketInOutPlayerUpdate implements Packet {
     private Vector2f futurePos;
     private Vector2f location3;
     private Vector2f location4;
-    private short yaw;
+    private short speed;
 
     private int currentAction;
     private PlayerCostume costume;
@@ -40,7 +40,7 @@ public class PacketInOutPlayerUpdate implements Packet {
         serializer.writeLocation(futurePos);
         serializer.writeLocation(location3);
         serializer.writeLocation(location4);
-        serializer.writeShort(yaw);
+        serializer.writeShortLE(speed);
 
         serializer.writeInt(currentAction);
         serializer.writeShortLE(getCostume().getId());
@@ -63,7 +63,7 @@ public class PacketInOutPlayerUpdate implements Packet {
         futurePos = serializer.readLocation();
         location3 = serializer.readLocation();
         location4 = serializer.readLocation();
-        yaw = serializer.readShort();
+        speed = serializer.readShortLE();
 
         currentAction = serializer.readInt();
         costume = IdentifiableEnumHelper.fromId(PlayerCostume.class, serializer.readShortLE());
@@ -124,12 +124,12 @@ public class PacketInOutPlayerUpdate implements Packet {
         this.location4 = location4;
     }
 
-    public short getYaw() {
-        return yaw;
+    public short getSpeed() {
+        return speed;
     }
 
-    public void setYaw(short yaw) {
-        this.yaw = yaw;
+    public void setSpeed(short speed) {
+        this.speed = speed;
     }
 
     public int getCurrentAction() {
