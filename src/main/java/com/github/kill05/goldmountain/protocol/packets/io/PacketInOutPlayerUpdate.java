@@ -43,7 +43,7 @@ public class PacketInOutPlayerUpdate implements Packet {
         serializer.writeShort(yaw);
 
         serializer.writeInt(currentAction);
-        serializer.writeShort((costume != null ? costume : PlayerCostume.DEFAULT).getId());
+        serializer.writeShortLE(getCostume().getId());
         serializer.writeInt(unknown_1);
 
         serializer.writeInt(0x0000_0000);
@@ -66,7 +66,7 @@ public class PacketInOutPlayerUpdate implements Packet {
         yaw = serializer.readShort();
 
         currentAction = serializer.readInt();
-        costume = IdentifiableEnumHelper.fromId(PlayerCostume.class, serializer.readShort());
+        costume = IdentifiableEnumHelper.fromId(PlayerCostume.class, serializer.readShortLE());
         unknown_1 = serializer.readInt();
 
         serializer.readInt();   // ignored, always 00000000
@@ -141,7 +141,7 @@ public class PacketInOutPlayerUpdate implements Packet {
     }
 
     public PlayerCostume getCostume() {
-        return costume;
+        return costume != null ? costume : PlayerCostume.DEFAULT;
     }
 
     public void setCostume(PlayerCostume costume) {
