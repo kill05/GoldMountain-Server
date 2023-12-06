@@ -51,44 +51,44 @@ public class ServerConnection {
                                 .addLast("packet_splitter", new PacketDecoder())
                                 .addLast("packet_encoder", new PacketEncoder())
                                 .addLast("packet_handler", new PacketHandler(ServerConnection.this))
-                                .addLast("channel_listener", new ChannelInboundHandlerAdapter() {
-                                    @Override
-                                    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                                        GMServer.logger.info(String.format("Player (ip: %s) connected.", ctx.channel().remoteAddress()));
-                                        clientChannels.add(channel);
-
-                                        sendPacket(new PacketOutAssignPlayerId(0x0001));
-                                        super.channelActive(ctx);
-                                    }
-
-                                    @Override
-                                    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                                        GMServer.logger.info(String.format("Player (ip: %s) disconnected.", ctx.channel().remoteAddress()));
-                                        clientChannels.remove(channel);
-
-                                        super.channelInactive(ctx);
-                                    }
-
-                                    @Override
-                                    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                                        if(cause instanceof IOException) {
-                                            GMServer.logger.info(String.format("Player (ip: %s) lost connection: %s", ctx.channel().remoteAddress(), cause));
-                                            return;
-                                        }
-
-                                        super.exceptionCaught(ctx, cause);
-                                    }
-                                });
-
+                                .addLast("channel_listener", new ChannelListener());
                     }
-
-
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .bind(PORT).channel();
     }
+
+    private class ChannelListener extends ChannelInboundHandlerAdapter {
+        @Override
+        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+            GMServer.logger.info(String.format("Player (ip: %s) connected.", ctx.channel().remoteAddress()));
+            clientChannels.add(ctx.channel());
+
+            sendPacket(new PacketOutAssignPlayerId(0x0001));
+            super.channelActive(ctx);
+        }
+
+        @Override
+        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            GMServer.logger.info(String.format("Player (ip: %s) disconnected.", ctx.channel().remoteAddress()));
+            clientChannels.remove(ctx.channel());
+
+            super.channelInactive(ctx);
+        }
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            if(cause instanceof IOException) {
+                GMServer.logger.info(String.format("Player (ip: %s) lost connection: %s", ctx.channel().remoteAddress(), cause));
+                return;
+            }
+
+            super.exceptionCaught(ctx, cause);
+        }
+    }
+
 
     public void shutdown() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(2);
@@ -123,4 +123,6 @@ public class ServerConnection {
     public GMServer getServer() {
         return server;
     }
+
+
 }
