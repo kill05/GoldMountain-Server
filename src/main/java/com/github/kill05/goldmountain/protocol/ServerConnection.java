@@ -3,9 +3,9 @@ package com.github.kill05.goldmountain.protocol;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
+import com.github.kill05.goldmountain.protocol.packets.out.PacketOutAssignPlayerId;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketEncoder;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketDecoder;
-import com.google.common.collect.Lists;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -13,7 +13,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketHandler;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class ServerConnection {
 
@@ -32,7 +36,7 @@ public class ServerConnection {
 
     public ServerConnection(GMServer server) {
         this.server = server;
-        this.clientChannels = Lists.newArrayList();
+        this.clientChannels = Collections.synchronizedList(new ArrayList<>());
         this.packetRegistry = PacketRegistry.instance();
 
         this.bossGroup = new NioEventLoopGroup();
@@ -46,10 +50,39 @@ public class ServerConnection {
                         channel.pipeline()
                                 .addLast("packet_splitter", new PacketDecoder())
                                 .addLast("packet_encoder", new PacketEncoder())
-                                .addLast("packet_handler", new PacketHandler(ServerConnection.this));
+                                .addLast("packet_handler", new PacketHandler(ServerConnection.this))
+                                .addLast("channel_listener", new ChannelInboundHandlerAdapter() {
+                                    @Override
+                                    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                                        GMServer.logger.info(String.format("Player (ip: %s) connected.", ctx.channel().remoteAddress()));
+                                        clientChannels.add(channel);
 
-                        clientChannels.add(channel);
+                                        sendPacket(new PacketOutAssignPlayerId(0x0001));
+                                        super.channelActive(ctx);
+                                    }
+
+                                    @Override
+                                    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                                        GMServer.logger.info(String.format("Player (ip: %s) disconnected.", ctx.channel().remoteAddress()));
+                                        clientChannels.remove(channel);
+
+                                        super.channelInactive(ctx);
+                                    }
+
+                                    @Override
+                                    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                                        if(cause instanceof IOException) {
+                                            GMServer.logger.info(String.format("Player (ip: %s) lost connection: %s", ctx.channel().remoteAddress(), cause));
+                                            return;
+                                        }
+
+                                        super.exceptionCaught(ctx, cause);
+                                    }
+                                });
+
                     }
+
+
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
