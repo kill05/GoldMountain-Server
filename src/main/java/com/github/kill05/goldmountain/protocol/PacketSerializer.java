@@ -27,12 +27,22 @@ public class PacketSerializer extends ByteBuf implements AutoCloseable {
 
 
     public Vector2f readLocation() {
-        return new Vector2f(byteBuf.readShortLE() / TILE_SIZE, byteBuf.readShortLE() / TILE_SIZE);
+        return new Vector2f(readCoordinate(), readCoordinate());
+    }
+
+    public float readCoordinate() {
+        return byteBuf.readShortLE() / TILE_SIZE;
     }
     
     public void writeLocation(Vector2f location) {
-        byteBuf.writeShortLE((int) (location.x * TILE_SIZE));
-        byteBuf.writeShortLE((int) (location.y * TILE_SIZE));
+        float x = location != null ? location.x : 0f;
+        float y = location != null ? location.y : 0f;
+        writeLocation(x, y);
+    }
+
+    public void writeLocation(float x, float y) {
+        byteBuf.writeShortLE((int) (x * TILE_SIZE));
+        byteBuf.writeShortLE((int) (y * TILE_SIZE));
     }
 
 
