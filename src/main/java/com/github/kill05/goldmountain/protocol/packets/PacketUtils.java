@@ -8,11 +8,11 @@ public class PacketUtils {
     private PacketUtils() {}
 
     public static int getPacketId(ByteBuf byteBuf) {
-        return byteBuf.getByte(6);
+        return byteBuf.getByte(byteBuf.readerIndex() + 6);
     }
 
     public static int getPacketLength(ByteBuf byteBuf) {
-        return byteBuf.getShortLE(2);
+        return byteBuf.getShortLE( byteBuf.readerIndex() + 2);
     }
 
     public static void encodePacketLength(PacketSerializer serializer) {
