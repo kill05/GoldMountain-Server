@@ -9,23 +9,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class CommandHandler implements Runnable {
+public class CommandHandler{
 
     private final Thread readerThread;
     private final List<String> inputBuffer;
     private final Map<String, Command> commandMap;
 
     public CommandHandler(GMServer server) {
-        this.readerThread = new Thread(null, this, "command-reader");
+        this.readerThread = new ReaderThread();
         this.inputBuffer = Collections.synchronizedList(new ArrayList<>());
         this.commandMap = new HashMap<>();
-
-        readerThread.setDaemon(true);
-        readerThread.start();
 
         registerCommand(new TpsCommand(server));
         registerCommand(new LogLastUpdateCommand(server));
         registerCommand(new TeleportCommand(server));
+        registerCommand(new DecodeLocationCommand());
+
         registerCommand(new TestCommand(server));
         registerCommand(new DecodeLocationCommand());
     }
@@ -41,7 +40,6 @@ public class CommandHandler implements Runnable {
             commandMap.put(name, command);
         }
     }
-
 
     public void processInput() {
         synchronized (inputBuffer) {
@@ -73,22 +71,39 @@ public class CommandHandler implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        while (true) {
-            try {
-                String line = reader.readLine();
+    public void executeCommand(String command) {
+        synchronized (inputBuffer) {
+            inputBuffer.add(command);
+        }
+    }
 
-                synchronized (inputBuffer) {
-                    inputBuffer.add(line);
+
+    private class ReaderThread extends Thread {
+        public ReaderThread() {
+            super("command-reader");
+            setDaemon(true);
+            start();
+        }
+
+        @Override
+        public void run() {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+            while (true) {
+                try {
+                    String line = reader.readLine();
+
+                    synchronized (inputBuffer) {
+                        inputBuffer.add(line);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
+
 
     public Thread getReaderThread() {
         return readerThread;
