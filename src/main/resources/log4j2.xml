@@ -2,7 +2,7 @@
 <Configuration status="INFO" shutdownHook="disable">
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{HH:mm:ss}] [%logger{36}/%level]: %msg%n" />
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%C{1}/%level]: %msg%n" />
         </Console>
     </Appenders>
 
