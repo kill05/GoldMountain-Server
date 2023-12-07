@@ -35,34 +35,51 @@ public class PacketRegistry {
 
 
     private <T extends Packet> void register(int id, Class<T> packetClass, PacketDirection direction) {
-        try {
-            packetClass.getConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(String.format("Packet %s doesn't have a zero argument constructor.", packetClass), e);
-        }
-
         RegisteredPacket packet = new RegisteredPacket(id, packetClass, direction);
-        packetClassMap.put(packetClass, packet);
 
         if(direction.isInbound()) {
             if(inboundPacketIdMap.containsKey(id))
                 throw new IllegalArgumentException(String.format("Duplicate inbound packet id: %s", Integer.toHexString(id)));
 
+            try {
+                packetClass.getConstructor();
+            } catch (NoSuchMethodException e) {
+                throw new IllegalArgumentException(String.format("Inbound packet %s doesn't have a zero argument constructor.", packetClass), e);
+            }
+
             inboundPacketIdMap.put(id, packet);
         }
+
+        packetClassMap.put(packetClass, packet);
     }
 
     public RegisteredPacket getInboundPacket(int id) {
         RegisteredPacket packet = inboundPacketIdMap.get(id);
-        if(packet == null) GMServer.logger.warn(String.format("Packet 0x%02x is not registered as an inbound packet.", id));
+        if(packet == null) GMServer.logger.warn(String.format("Unregistered inbound packet: 0x%02x.", id));
         return packet;
     }
 
     public RegisteredPacket getPacket(Class<? extends Packet> clazz) {
-        RegisteredPacket packet = packetClassMap.get(clazz);
-        if(packet == null) GMServer.logger.warn(String.format("Unregistered packet: %s.", clazz));
+        RegisteredPacket packet = getPacket0(clazz);
+        if(packet == null && !clazz.isInstance(UnregisteredPacket.class)) GMServer.logger.warn(String.format("Unregistered packet: %s.", clazz));
         return packet;
     }
+
+    @SuppressWarnings("unchecked")
+    private RegisteredPacket getPacket0(Class<? extends Packet> clazz) {
+        RegisteredPacket packet = packetClassMap.get(clazz);
+        if(packet != null) return packet;
+
+        Class<?> superclass = clazz.getSuperclass();
+        if(!Packet.class.isAssignableFrom(superclass)) return null;
+
+        Class<? extends Packet> superPacketClass = (Class<? extends Packet>) superclass;
+        RegisteredPacket superPacket = getPacket0(superPacketClass);
+        if(superPacket != null) packetClassMap.put(superPacketClass, superPacket);
+
+        return superPacket;
+    }
+
 
     public RegisteredPacket getPacket(Packet packet) {
         return getPacket(packet.getClass());
