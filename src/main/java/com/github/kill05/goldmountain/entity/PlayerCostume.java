@@ -1,4 +1,4 @@
-package com.github.kill05.goldmountain.player;
+package com.github.kill05.goldmountain.entity;
 
 import com.github.kill05.goldmountain.protocol.enums.Identifiable;
 

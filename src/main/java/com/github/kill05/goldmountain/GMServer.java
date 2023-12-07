@@ -1,7 +1,7 @@
 package com.github.kill05.goldmountain;
 
 import com.github.kill05.goldmountain.commands.CommandHandler;
-import com.github.kill05.goldmountain.player.PlayerCostume;
+import com.github.kill05.goldmountain.entity.PlayerCostume;
 import com.github.kill05.goldmountain.protocol.ServerConnection;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import org.apache.logging.log4j.LogManager;
@@ -10,8 +10,8 @@ import org.joml.Vector2f;
 
 public class GMServer {
 
-    public static final int TARGET_TPS = 20;
-    public static final Logger logger = LogManager.getLogger("Server");
+    public static final int TARGET_TPS = 15;
+    public static final Logger logger = LogManager.getLogger(GMServer.class);
 
     private Thread serverThread;
     private ServerConnection serverConnection;
@@ -43,7 +43,7 @@ public class GMServer {
 
         serverThread.start();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        //Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
 
     private void startGameLoop() {
@@ -72,39 +72,29 @@ public class GMServer {
     }
 
     private void tick() {
+        //commandHandler.executeCommand("/test2 0000 4368b73f");
         commandHandler.processInput();
-
-        /*
-        for(int i = 1; i < 11; i++) {
-            sendTestPlayer((short) i, new Vector2f(-0.5f + i, 0.5f), PlayerCostume.values()[i], (short) 0x1400);
-        }
-        */
-
-        //serverConnection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0080 0061 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
-        //serverConnection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0780 0761 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
-        //serverConnection.sendPacket(new TestPacket("03 4700 0000 0000 2b00 0000 0101 007e 0000  00c70253 02c70253 02c70253 02c70253 0214 003e  0000  00000047 9700 00000000 00e8 03"));
-        //serverConnection.sendPacket(new TestPacket("01feff69de5900cc008c00cc008c00cc008c00cc008c002d00ffffffff9700ffffffff00000000e8030dcd4100000101000c000000910098009100980091009800910098001400ffffffff0000ffffffff00000000e803"));
-        //serverConnection.sendPacket(new PacketOutServerPlayerUpdate());
     }
 
-    public void sendTestPlayer(short id, Vector2f loc, PlayerCostume costume, short yaw) {
+
+    public void sendTestPlayer(short id, Vector2f loc1, Vector2f loc2, Vector2f loc3, Vector2f loc4) {
         PacketInOutPlayerUpdate packet = new PacketInOutPlayerUpdate();
 
-        packet.setPlayerId(id);
-        packet.setMetadata(0x78000000);
+        packet.setEntityId(id);
+        packet.setTotalLevel(0x0000_0000);
 
-        packet.setCostume(costume);
-        packet.setClock((byte) 0x00);
-        packet.setCurrentAction(0xffff_ffff);
-        packet.setUnknown_1(0xffff_ffff);
+        packet.setCostume(PlayerCostume.DEFAULT);
+        packet.setUnknown_2((byte) 0x00);
+        packet.setUnknown_0(0xffff_ffff);
+        packet.setTargetTileId(0xffff_ffff);
 
-        packet.setYaw(yaw);
-        packet.setUnknown_2((short) 0x4300);
+        packet.setSpeed((short) 0x0040);
+        packet.setUnknown_3((short) 0x4300);
 
-        packet.setCurrentPos(loc);
-        packet.setFuturePos(loc);
-        packet.setLocation3(loc);
-        packet.setLocation4(loc);
+        packet.setLocation(loc1);
+        packet.setNextLocation(loc2);
+        packet.setNextLocation1(loc3);
+        packet.setNextLocation2(loc4);
 
         serverConnection.sendPacket(packet);
     }

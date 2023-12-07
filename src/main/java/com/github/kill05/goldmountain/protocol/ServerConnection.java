@@ -1,17 +1,17 @@
 package com.github.kill05.goldmountain.protocol;
 
+import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutAssignPlayerId;
-import com.github.kill05.goldmountain.protocol.pipeline.PacketEncoder;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketDecoder;
+import com.github.kill05.goldmountain.protocol.pipeline.PacketEncoder;
+import com.github.kill05.goldmountain.protocol.pipeline.PacketHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import com.github.kill05.goldmountain.GMServer;
-import com.github.kill05.goldmountain.protocol.pipeline.PacketHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;

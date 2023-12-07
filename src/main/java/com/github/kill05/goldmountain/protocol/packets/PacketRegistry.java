@@ -2,9 +2,11 @@ package com.github.kill05.goldmountain.protocol.packets;
 
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
+import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutDigTile;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutAssignPlayerId;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutDimension;
-import com.github.kill05.goldmountain.protocol.packets.out.PacketOutDimensionData;
+import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutShadowCloneUpdate;
+import com.github.kill05.goldmountain.protocol.packets.out.actions.PacketOutExecuteClientAction;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutStaircaseLocation;
 
 import java.util.*;
@@ -21,9 +23,11 @@ public class PacketRegistry {
         this.packetClassMap = new HashMap<>();
 
         register(0x01, PacketInOutPlayerUpdate.class, PacketDirection.BOTH);
+        register(0x02, PacketInOutShadowCloneUpdate.class, PacketDirection.BOTH);
+        register(0x03, PacketInOutDigTile.class, PacketDirection.BOTH);
 
         register(0x04, PacketOutDimension.class, PacketDirection.OUTBOUND);
-        register(0x05, PacketOutDimensionData.class, PacketDirection.OUTBOUND);
+        register(0x05, PacketOutExecuteClientAction.class, PacketDirection.OUTBOUND);
         register(0x06, PacketOutStaircaseLocation.class, PacketDirection.OUTBOUND);
         register(0x07, PacketOutAssignPlayerId.class, PacketDirection.OUTBOUND);
     }
