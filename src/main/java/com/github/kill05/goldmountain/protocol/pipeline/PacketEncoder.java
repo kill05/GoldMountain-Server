@@ -27,7 +27,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
             serializer.writeInt(0x0000_0000); // the first 2 bytes will be replaced with length
 
             if(registered) {
-                int id = playerController.getPacketRegistry().getPacket(packet.getClass()).getId();
+                int id = playerController.getPacketRegistry().getPacket(packet.getClass()).id();
                 serializer.writeByte(id);
             }
 

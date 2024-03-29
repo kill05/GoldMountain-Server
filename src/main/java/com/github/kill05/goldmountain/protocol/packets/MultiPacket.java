@@ -19,7 +19,7 @@ public class MultiPacket implements UnregisteredPacket {
     @Override
     public void encode(PacketSerializer serializer) {
         for(Packet packet : packets) {
-            int id = packetRegistry.getPacket(packet.getClass()).getId();
+            int id = packetRegistry.getPacket(packet.getClass()).id();
             serializer.writeByte(id);
             packet.encode(serializer);
             serializer.writeByte(0x00);
