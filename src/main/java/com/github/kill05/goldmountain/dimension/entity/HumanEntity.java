@@ -43,4 +43,8 @@ public abstract class HumanEntity extends Entity {
     public int getTargetTileId() {
         return targetTileId;
     }
+
+    public void updateTargetTileId(int targetTileId) {
+        this.targetTileId = targetTileId;
+    }
 }

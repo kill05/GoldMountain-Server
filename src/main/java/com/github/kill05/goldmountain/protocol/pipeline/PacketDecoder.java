@@ -16,6 +16,12 @@ import java.util.List;
 
 public class PacketDecoder extends ByteToMessageDecoder {
 
+    private final PlayerController playerController;
+
+    public PacketDecoder(PlayerController playerController) {
+        this.playerController = playerController;
+    }
+
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
         if(byteBuf.readableBytes() < 7) return;
@@ -31,7 +37,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
         if(byteBuf.readableBytes() < length) return;
 
         try {
-            Packet packet = PacketRegistry.instance().createInboundPacket(id);
+            Packet packet = playerController.getPacketRegistry().createInboundPacket(id);
             if (packet != null) {
                 PacketSerializer serializer = new PacketSerializer(byteBuf.slice(7, length - 7));
                 packet.decode(serializer);

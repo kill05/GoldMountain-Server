@@ -1,7 +1,7 @@
 package com.github.kill05.goldmountain.dimension.entity;
 
-import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.PlayerConnection;
+import com.github.kill05.goldmountain.protocol.PlayerController;
 import io.netty.channel.Channel;
 
 public class ServerPlayer extends HumanEntity {
@@ -12,8 +12,8 @@ public class ServerPlayer extends HumanEntity {
 
     private int totalLevel;
 
-    public ServerPlayer(GMServer server, short id, Channel channel) {
-        super(server);
+    public ServerPlayer(PlayerController controller, short id, Channel channel) {
+        super(controller.getServer());
         this.connection = new PlayerConnection(this, channel);
         this.id = id;
     }

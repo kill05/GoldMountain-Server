@@ -3,7 +3,7 @@ package com.github.kill05.goldmountain.protocol.packets;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 import io.netty.buffer.ByteBuf;
 
-public class PacketUtils {
+public final class PacketUtils {
 
     private PacketUtils() {}
 

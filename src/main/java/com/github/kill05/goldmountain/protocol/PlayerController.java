@@ -4,7 +4,6 @@ import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutAssignPlayerId;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketDecoder;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketEncoder;
@@ -13,6 +12,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -20,13 +20,11 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayerController {
 
     public static final int PORT = 5575;
     public static final short MAGIC_BYTES = 0x1764;
-    private static final AtomicInteger CURRENT_ID = new AtomicInteger();
 
     private final GMServer server;
     private final PacketRegistry packetRegistry;
@@ -35,8 +33,6 @@ public class PlayerController {
 
     private final EventLoopGroup bossGroup;
     private final EventLoopGroup workerGroup;
-
-    public PacketInOutPlayerUpdate lastUpdate;
 
     public PlayerController(GMServer server) {
         this.server = server;
@@ -50,13 +46,14 @@ public class PlayerController {
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<>() {
                     @Override
-                    protected void initChannel(Channel channel) {
-                        ServerPlayer player = new ServerPlayer(server, (short) CURRENT_ID.incrementAndGet(), channel);
+                    protected void initChannel(Channel channel) throws Exception {
+                        PlayerController controller = PlayerController.this;
+                        ServerPlayer player = new ServerPlayer(controller, (short) getAvailableId(), channel);
                         PlayerConnection connection = player.getConnection();
 
                         channel.pipeline()
-                                .addLast("packet_splitter", new PacketDecoder())
-                                .addLast("packet_encoder", new PacketEncoder())
+                                .addLast("packet_decoder", new PacketDecoder(controller))
+                                .addLast("packet_encoder", new PacketEncoder(controller))
                                 .addLast("packet_handler", new PacketHandler(connection))
                                 .addLast("channel_listener", new ChannelListener());
 
@@ -72,13 +69,13 @@ public class PlayerController {
     private class ChannelListener extends ChannelInboundHandlerAdapter {
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
-            handleConnect(ctx);
+            handleConnect(ctx.channel());
             super.channelActive(ctx);
         }
 
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            handleDisconnect(ctx);
+            handleDisconnect(ctx.channel());
             super.channelInactive(ctx);
         }
 
@@ -88,11 +85,18 @@ public class PlayerController {
                 SocketAddress address = ctx.channel().remoteAddress();
                 GMServer.logger.info(String.format("Player (address: %s) lost connection: %s", address, cause));
 
-                handleDisconnect(ctx);
+                handleDisconnect(ctx.channel());
                 return;
             }
 
             super.exceptionCaught(ctx, cause);
+        }
+    }
+
+
+    public void tick() {
+        for (ServerPlayer player : players.values()) {
+            player.tick();
         }
     }
 
@@ -107,22 +111,29 @@ public class PlayerController {
     }
 
 
-    private void handleConnect(ChannelHandlerContext ctx) {
-        Channel channel = ctx.channel();
+    private void handleConnect(Channel channel) {
         ServerPlayer player = getPlayer(channel);
         player.getConnection().sendPacket(new PacketOutAssignPlayerId(player.getId()));
 
-        SocketAddress address = ctx.channel().remoteAddress();
+        SocketAddress address = channel.remoteAddress();
         GMServer.logger.info(String.format("Player (id: %s, address: %s) connected.", player.getId(), address));
     }
 
-    private void handleDisconnect(ChannelHandlerContext ctx) {
-        Channel channel = ctx.channel();
+    private void handleDisconnect(Channel channel) {
         ServerPlayer player = getPlayer(channel);
         players.remove(channel);
 
-        SocketAddress address = ctx.channel().remoteAddress();
+        SocketAddress address = channel.remoteAddress();
         GMServer.logger.info(String.format("Player (id: %s, address: %s) disconnected.", player.getId(), address));
+    }
+
+    private int getAvailableId() throws IOException {
+        short id = 0;
+        while (true) {
+            if(getPlayer(id) == null) return id;
+            if(id == Short.MAX_VALUE) throw new IOException("No more available ids.");
+            id++;
+        }
     }
 
     public void broadcastPacket(Packet packet) {
@@ -146,6 +157,14 @@ public class PlayerController {
 
     public ServerPlayer getPlayer(Channel channel) {
         return players.get(channel);
+    }
+
+    public @Nullable ServerPlayer getPlayer(int id) {
+        for (ServerPlayer player : players.values()) {
+            if(player.getId() == id) return player;
+        }
+
+        return null;
     }
 
 

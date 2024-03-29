@@ -12,13 +12,13 @@ public abstract class PacketInOutHumanEntityUpdate implements Packet {
     protected short entityId;
 
     protected Vector2f[] checkpoints;
-    private short speed;
+    protected short speed;
 
-    private int unknown_0;
-    private PlayerCostume costume;
-    private int targetTileId;
-    private byte unknown_2;
-    private short unknown_3;
+    protected int unknown_0;
+    protected PlayerCostume costume;
+    protected int targetTileId;
+    protected byte unknown_2;
+    protected short unknown_3;
 
     public PacketInOutHumanEntityUpdate(HumanEntity human) {
         this.entityId = human.getId();

@@ -18,6 +18,7 @@ public class PacketHandler extends ChannelDuplexHandler {
         this.connection = controller;
     }
 
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if(!(msg instanceof Packet packet)) {

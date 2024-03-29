@@ -73,9 +73,14 @@ public class GMServer {
 
     private void tick() {
         //commandHandler.executeCommand("/test2 0000 4368b73f");
+        playerController.tick();
         commandHandler.processInput();
     }
 
+
+    public void sendTestPlayer(short id, Vector2f loc) {
+        sendTestPlayer(id, loc, loc, loc, loc);
+    }
 
     public void sendTestPlayer(short id, Vector2f loc1, Vector2f loc2, Vector2f loc3, Vector2f loc4) {
         PacketInOutPlayerUpdate packet = new PacketInOutPlayerUpdate();

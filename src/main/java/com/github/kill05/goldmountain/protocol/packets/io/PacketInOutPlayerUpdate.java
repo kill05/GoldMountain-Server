@@ -3,6 +3,8 @@ package com.github.kill05.goldmountain.protocol.packets.io;
 import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 
+import java.util.Arrays;
+
 public class PacketInOutPlayerUpdate extends PacketInOutHumanEntityUpdate {
 
     private int totalLevel;
@@ -47,4 +49,16 @@ public class PacketInOutPlayerUpdate extends PacketInOutHumanEntityUpdate {
         this.totalLevel = totalLevel;
     }
 
+
+    @Override
+    public String toString() {
+        return "PacketInOutPlayerUpdate{" +
+                "entityId=" + entityId +
+                ", totalLevel=" + totalLevel +
+                ", checkpoints=" + Arrays.toString(checkpoints) +
+                ", speed=" + speed +
+                ", costume=" + costume +
+                ", targetTileId=" + targetTileId +
+                '}';
+    }
 }

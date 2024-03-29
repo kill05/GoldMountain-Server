@@ -21,7 +21,7 @@ public class CommandHandler{
         this.commandMap = new HashMap<>();
 
         registerCommand(new TpsCommand(server));
-        registerCommand(new LogLastUpdateCommand(server));
+        registerCommand(new PlayerInfoCommand(server));
         registerCommand(new TeleportCommand(server));
         registerCommand(new DecodeLocationCommand());
     }
@@ -70,9 +70,7 @@ public class CommandHandler{
 
 
     public void executeCommand(String command) {
-        synchronized (inputBuffer) {
-            inputBuffer.add(command);
-        }
+        inputBuffer.add(command);
     }
 
 
@@ -90,10 +88,7 @@ public class CommandHandler{
             while (true) {
                 try {
                     String line = reader.readLine();
-
-                    synchronized (inputBuffer) {
-                        inputBuffer.add(line);
-                    }
+                    inputBuffer.add(line);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -101,12 +96,4 @@ public class CommandHandler{
         }
     }
 
-
-    public Thread getReaderThread() {
-        return readerThread;
-    }
-
-    public List<String> getInputBuffer() {
-        return inputBuffer;
-    }
 }
