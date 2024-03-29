@@ -1,7 +1,7 @@
 package com.github.kill05.goldmountain;
 
 import com.github.kill05.goldmountain.commands.CommandHandler;
-import com.github.kill05.goldmountain.entity.PlayerCostume;
+import com.github.kill05.goldmountain.dimension.entity.PlayerCostume;
 import com.github.kill05.goldmountain.protocol.ServerConnection;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import org.apache.logging.log4j.LogManager;

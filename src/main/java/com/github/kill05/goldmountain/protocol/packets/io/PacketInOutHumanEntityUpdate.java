@@ -1,7 +1,7 @@
 package com.github.kill05.goldmountain.protocol.packets.io;
 
-import com.github.kill05.goldmountain.entity.HumanEntity;
-import com.github.kill05.goldmountain.entity.PlayerCostume;
+import com.github.kill05.goldmountain.dimension.entity.HumanEntity;
+import com.github.kill05.goldmountain.dimension.entity.PlayerCostume;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 import com.github.kill05.goldmountain.protocol.enums.IdentifiableEnumHelper;
 import com.github.kill05.goldmountain.protocol.packets.Packet;

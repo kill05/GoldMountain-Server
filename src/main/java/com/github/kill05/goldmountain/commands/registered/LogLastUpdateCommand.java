@@ -3,7 +3,7 @@ package com.github.kill05.goldmountain.commands.registered;
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.commands.Command;
 import com.github.kill05.goldmountain.commands.senders.CommandSender;
-import com.github.kill05.goldmountain.player.PlayerAction;
+import com.github.kill05.goldmountain.dimension.entity.PlayerAction;
 import com.github.kill05.goldmountain.protocol.enums.IdentifiableEnumHelper;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import org.joml.Vector2f;
@@ -21,16 +21,14 @@ public class LogLastUpdateCommand extends Command {
     public void execute(CommandSender sender, String[] args) {
         PacketInOutPlayerUpdate lastUpdate = server.getConnection().lastUpdate;
         System.out.println("=======================================================================================");
-        logPacket("player id:    ", lastUpdate.getPlayerId());
-        logPacket("metadata:     ", lastUpdate.getMetadata());
-        logPacket("prev position:", lastUpdate.getCurrentPos());
-        logPacket("position 2:   ", lastUpdate.getFuturePos());
-        logPacket("position 3:   ", lastUpdate.getLocation3());
-        logPacket("position 4:   ", lastUpdate.getLocation4());
-        logPacket("data:         ", lastUpdate.getYaw());
-        logPacket("action info:  ", IdentifiableEnumHelper.fromId(PlayerAction.class, lastUpdate.getCurrentAction()));
+        logPacket("player id:    ", lastUpdate.getEntityId());
+        logPacket("total level:  ", lastUpdate.getTotalLevel());
+        logPacket("position:     ", lastUpdate.getLocation());
+        logPacket("next position:", lastUpdate.getNextLocation());
+        logPacket("speed:        ", lastUpdate.getSpeed());
+        logPacket("action info:  ", IdentifiableEnumHelper.fromId(PlayerAction.class, lastUpdate.getUnknown_0()));
         logPacket("costume:      ", lastUpdate.getCostume());
-        logPacket("breaking info:", lastUpdate.getUnknown_1());
+        logPacket("breaking info:", lastUpdate.getTargetTileId());
         System.out.println("=======================================================================================");
     }
 

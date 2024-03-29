@@ -52,6 +52,8 @@ public class ServerConnection {
                                 .addLast("packet_encoder", new PacketEncoder())
                                 .addLast("packet_handler", new PacketHandler(ServerConnection.this))
                                 .addLast("channel_listener", new ChannelListener());
+
+                        clientChannels.add(channel);
                     }
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)
@@ -64,7 +66,6 @@ public class ServerConnection {
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             GMServer.logger.info(String.format("Player (ip: %s) connected.", ctx.channel().remoteAddress()));
-            clientChannels.add(ctx.channel());
 
             sendPacket(new PacketOutAssignPlayerId(0x0001));
             super.channelActive(ctx);

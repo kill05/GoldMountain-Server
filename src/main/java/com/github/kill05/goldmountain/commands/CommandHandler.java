@@ -24,9 +24,6 @@ public class CommandHandler{
         registerCommand(new LogLastUpdateCommand(server));
         registerCommand(new TeleportCommand(server));
         registerCommand(new DecodeLocationCommand());
-
-        registerCommand(new TestCommand(server));
-        registerCommand(new DecodeLocationCommand());
     }
 
 

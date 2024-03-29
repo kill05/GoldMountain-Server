@@ -1,6 +1,6 @@
-package com.github.kill05.goldmountain.entity;
+package com.github.kill05.goldmountain.dimension.entity;
 
-import com.github.kill05.goldmountain.dimension.DimensionType;
+import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.PlayerConnection;
 import io.netty.channel.Channel;
 
@@ -10,10 +10,10 @@ public class ServerPlayer extends HumanEntity {
     private final PlayerConnection connection;
     private ShadowClone shadowClone;
 
-    private DimensionType dimension;
     private int totalLevel;
 
-    public ServerPlayer(short id, Channel channel) {
+    public ServerPlayer(GMServer server, short id, Channel channel) {
+        super(server);
         this.connection = new PlayerConnection(this, channel);
         this.id = id;
     }
@@ -34,15 +34,6 @@ public class ServerPlayer extends HumanEntity {
         return connection;
     }
 
-    @Override
-    public DimensionType getDimension() {
-        return dimension;
-    }
-
-    @Override
-    protected void setDimension(DimensionType dimension) {
-        this.dimension = dimension;
-    }
 
 
     public int getTotalLevel() {

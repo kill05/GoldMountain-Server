@@ -1,4 +1,4 @@
-package com.github.kill05.goldmountain.entity;
+package com.github.kill05.goldmountain.dimension.entity;
 
 import com.github.kill05.goldmountain.protocol.enums.Identifiable;
 

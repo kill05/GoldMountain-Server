@@ -1,6 +1,6 @@
 package com.github.kill05.goldmountain.protocol;
 
-import com.github.kill05.goldmountain.entity.ServerPlayer;
+import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutShadowCloneUpdate;
@@ -48,6 +48,11 @@ public class PlayerConnection {
 
     public void handleCloneUpdate(PacketInOutShadowCloneUpdate packet) {
         ticksSinceCloneUpdate = 0;
+    }
+
+
+    public void updateDimension(boolean syncFloor) {
+
     }
 
 

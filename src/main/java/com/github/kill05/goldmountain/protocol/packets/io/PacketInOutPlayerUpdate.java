@@ -1,6 +1,6 @@
 package com.github.kill05.goldmountain.protocol.packets.io;
 
-import com.github.kill05.goldmountain.entity.ServerPlayer;
+import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 
 public class PacketInOutPlayerUpdate extends PacketInOutHumanEntityUpdate {

@@ -28,6 +28,8 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
             packet.encode(serializer);
             PacketUtils.encodePacketLength(serializer);
+
+            //ServerConnection.logger.info("Hex: " + ByteBufUtil.hexDump(serializer));
         } catch (Exception e) {
             GMServer.logger.warn("Failed to encode packet.", e);
         }

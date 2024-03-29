@@ -1,21 +1,36 @@
-package com.github.kill05.goldmountain.entity;
+package com.github.kill05.goldmountain.dimension.entity;
 
 import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.protocol.PlayerConnection;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutShadowCloneUpdate;
+import org.jetbrains.annotations.Nullable;
 
 public class ShadowClone extends HumanEntity {
 
     private final ServerPlayer owner;
 
-
     public ShadowClone(ServerPlayer owner) {
+        super(owner.server);
         this.owner = owner;
     }
 
+    @Override
+    public DimensionType getDimensionType() {
+        return owner.getDimensionType();
+    }
 
-    public void update(PacketInOutShadowCloneUpdate packet) {
+    @Override
+    public int getFloor() {
+        return owner.getFloor();
+    }
 
+    @Override
+    public void teleport(@Nullable DimensionType type) {
+        // Ignore, can only teleport with owner
+    }
+
+    @Override
+    public void descend(boolean bypassLimit) {
+        // Ignore, can only teleport with owner
     }
 
 
@@ -33,13 +48,4 @@ public class ShadowClone extends HumanEntity {
         return owner.getConnection();
     }
 
-    @Override
-    public DimensionType getDimension() {
-        return owner.getDimension();
-    }
-
-    @Override
-    protected void setDimension(DimensionType dimension) {
-        owner.setDimension(dimension);
-    }
 }

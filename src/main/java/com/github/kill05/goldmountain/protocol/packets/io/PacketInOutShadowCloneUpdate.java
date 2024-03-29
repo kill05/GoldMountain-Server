@@ -1,6 +1,6 @@
 package com.github.kill05.goldmountain.protocol.packets.io;
 
-import com.github.kill05.goldmountain.entity.ShadowClone;
+import com.github.kill05.goldmountain.dimension.entity.ShadowClone;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 
 public class PacketInOutShadowCloneUpdate extends PacketInOutHumanEntityUpdate {
@@ -18,12 +18,12 @@ public class PacketInOutShadowCloneUpdate extends PacketInOutHumanEntityUpdate {
 
     @Override
     public void decodeLevel(PacketSerializer serializer) {
-        // No level
+        // Shadow clone packet holds no level
     }
 
     @Override
     public void encodeLevel(PacketSerializer serializer) {
-        // No level
+        // Shadow clone packet holds no level
     }
 
     @Override
