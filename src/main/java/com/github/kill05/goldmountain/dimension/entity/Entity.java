@@ -2,10 +2,7 @@ package com.github.kill05.goldmountain.dimension.entity;
 
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.dimension.DimensionType;
-import com.github.kill05.goldmountain.dimension.ServerDimension;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutChangeDimension;
-import org.apache.commons.lang3.NotImplementedException;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 
 public abstract class Entity {
@@ -31,47 +28,12 @@ public abstract class Entity {
     }
 
 
-    public ServerDimension getDimension() {
-        throw new NotImplementedException();
-    }
-
     public DimensionType getDimensionType() {
         return currentDimension != null ? currentDimension : DimensionType.SPAWN;
     }
 
     public int getFloor() {
         return currentFloor;
-    }
-
-
-    public void teleport(@Nullable DimensionType type, int floor) {
-        if(getDimensionType() == type) return;
-        setDimensionAndNotify(type, floor);
-
-        syncPosition();
-    }
-
-    public void teleport(@Nullable DimensionType type) {
-        teleport(type, 0);
-    }
-
-    public void teleportSpawn() {
-        teleport(DimensionType.SPAWN);
-    }
-
-
-    public void descend(boolean bypassLimit) {
-        DimensionType nextDim = currentDimension;
-        if(currentDimension == null || !currentDimension.hasMultipleFloors()) return;
-        if(!bypassLimit && currentFloor >= currentDimension.getMaxFloor()) return;
-
-        // check if the entity is getting teleported to last floor
-        if(currentFloor + 1 == currentDimension.getMaxFloor()) {
-            nextDim = currentDimension.getLastFloor();
-        }
-
-        setDimensionAndNotify(nextDim, currentFloor + 1);
-        sendDimensionPacket();
     }
 
 
@@ -85,21 +47,6 @@ public abstract class Entity {
         for(int i = 0; i <= currentFloor; i++) {
             sendDimensionPacket();
         }
-    }
-
-    private void setDimensionAndNotify(@Nullable DimensionType type, int floor) {
-        throw new NotImplementedException();
-        /*
-        ServerDimension oldDim = getDimension();
-        ServerDimension newDim = server.getDimensionStorage().getOrCreateDimension(type, floor);
-
-        this.currentDimension = type;
-        this.currentFloor = floor;
-
-        oldDim.removeEntity(this);
-        newDim.addEntity(this);
-
-         */
     }
 
 
