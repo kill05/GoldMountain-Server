@@ -2,7 +2,7 @@ package com.github.kill05.goldmountain.protocol.pipeline;
 
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
-import com.github.kill05.goldmountain.protocol.ServerConnection;
+import com.github.kill05.goldmountain.protocol.PlayerController;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.PacketUtils;
@@ -20,7 +20,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
         if(byteBuf.readableBytes() < 7) return;
 
-        if(byteBuf.getShort(byteBuf.readerIndex()) != ServerConnection.MAGIC_BYTES) {
+        if(byteBuf.getShort(byteBuf.readerIndex()) != PlayerController.MAGIC_BYTES) {
             GMServer.logger.warn(String.format("Found illegal data in the cumulative buffer (%s) ! Clearing...", ByteBufUtil.hexDump(byteBuf)));
             byteBuf.clear();
             return;

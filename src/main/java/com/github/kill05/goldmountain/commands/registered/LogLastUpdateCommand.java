@@ -19,12 +19,12 @@ public class LogLastUpdateCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PacketInOutPlayerUpdate lastUpdate = server.getConnection().lastUpdate;
+        PacketInOutPlayerUpdate lastUpdate = server.getPlayerController().lastUpdate;
         System.out.println("=======================================================================================");
         logPacket("player id:    ", lastUpdate.getEntityId());
         logPacket("total level:  ", lastUpdate.getTotalLevel());
-        logPacket("position:     ", lastUpdate.getLocation());
-        logPacket("next position:", lastUpdate.getNextLocation());
+        logPacket("position:     ", lastUpdate.getCheckpoints()[0]);
+        logPacket("next position:", lastUpdate.getCheckpoints()[1]);
         logPacket("speed:        ", lastUpdate.getSpeed());
         logPacket("action info:  ", IdentifiableEnumHelper.fromId(PlayerAction.class, lastUpdate.getUnknown_0()));
         logPacket("costume:      ", lastUpdate.getCostume());

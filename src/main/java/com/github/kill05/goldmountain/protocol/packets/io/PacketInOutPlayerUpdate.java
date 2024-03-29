@@ -29,7 +29,7 @@ public class PacketInOutPlayerUpdate extends PacketInOutHumanEntityUpdate {
     @Override
     public void decodeEnd(PacketSerializer serializer) {
         serializer.readInt();   // ignored, always 0000_0000
-        serializer.readShort(); // ignored, always e803 (which is 1000 in base 10, maybe there's a reason) (could be game version/protocol version?)
+        serializer.readShort(); // ignored, always e803 (which is 1000 in base 10, maybe there's a reason) (could be the game version/protocol version?)
     }
 
     @Override

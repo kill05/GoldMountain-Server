@@ -6,15 +6,12 @@ import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdat
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutShadowCloneUpdate;
 import io.netty.channel.Channel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
 
 public class PlayerConnection {
 
     private final ServerPlayer player;
     private final Channel channel;
-    private final List<Packet> packetQueue;
 
     private int ticksSinceUpdate;
     private int ticksSinceCloneUpdate;
@@ -22,13 +19,10 @@ public class PlayerConnection {
     public PlayerConnection(ServerPlayer player, Channel channel) {
         this.player = player;
         this.channel = channel;
-        this.packetQueue = Collections.synchronizedList(new ArrayList<>());
     }
 
     public void sendPacket(Packet packet) {
-        synchronized (packetQueue) {
-            packetQueue.add(packet);
-        }
+        channel.writeAndFlush(packet);
     }
 
     public void processPacketQueue() {
@@ -37,12 +31,24 @@ public class PlayerConnection {
 
 
     public void tick() {
+        PacketInOutPlayerUpdate updatePacket = new PacketInOutPlayerUpdate(player);
+        Collection<ServerPlayer> players = player.getServer().getPlayerController().getPlayers();
+        for (ServerPlayer serverPlayer : players) {
+            if(serverPlayer == player) continue;
+            serverPlayer.getConnection().sendPacket(updatePacket);
+        }
+
         ticksSinceUpdate++;
         ticksSinceCloneUpdate++;
     }
 
 
     public void handlePlayerUpdate(PacketInOutPlayerUpdate packet) {
+        player.updateTotalLevel(packet.getTotalLevel());
+        player.updateCostume(packet.getCostume());
+        player.updateSpeed(packet.getSpeed());
+        player.updateCheckpoints(packet.getCheckpoints());
+
         ticksSinceUpdate = 0;
     }
 

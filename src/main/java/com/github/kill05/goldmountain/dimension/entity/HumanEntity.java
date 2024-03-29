@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class HumanEntity extends Entity {
 
     protected PlayerCostume costume;
-    protected PlayerCostume fakeCostume;
+    protected PlayerCostume displayCostume;
 
     protected int targetTileId;
 
@@ -27,12 +27,16 @@ public abstract class HumanEntity extends Entity {
         return costume != null ? costume : PlayerCostume.DEFAULT;
     }
 
-    public PlayerCostume getFakeCostume() {
-        return fakeCostume != null ? fakeCostume : costume;
+    public void updateCostume(PlayerCostume costume) {
+        this.costume = costume;
     }
 
-    public void setFakeCostume(@Nullable PlayerCostume fakeCostume) {
-        this.fakeCostume = fakeCostume;
+    public PlayerCostume getDisplayCostume() {
+        return displayCostume != null ? displayCostume : costume;
+    }
+
+    public void setDisplayCostume(@Nullable PlayerCostume displayCostume) {
+        this.displayCostume = displayCostume;
     }
 
 

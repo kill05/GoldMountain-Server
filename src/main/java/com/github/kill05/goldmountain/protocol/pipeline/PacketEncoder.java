@@ -2,7 +2,7 @@ package com.github.kill05.goldmountain.protocol.pipeline;
 
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
-import com.github.kill05.goldmountain.protocol.ServerConnection;
+import com.github.kill05.goldmountain.protocol.PlayerController;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.PacketUtils;
@@ -18,7 +18,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         try {
             PacketSerializer serializer = new PacketSerializer(byteBuf);
             boolean registered = !(packet instanceof UnregisteredPacket);
-            serializer.writeShort(ServerConnection.MAGIC_BYTES);
+            serializer.writeShort(PlayerController.MAGIC_BYTES);
             serializer.writeInt(0x0000_0000); // first 2 bytes will be replaced with length
 
             if(registered) {

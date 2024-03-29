@@ -1,7 +1,7 @@
 package com.github.kill05.goldmountain.protocol.pipeline;
 
 import com.github.kill05.goldmountain.GMServer;
-import com.github.kill05.goldmountain.protocol.ServerConnection;
+import com.github.kill05.goldmountain.protocol.PlayerConnection;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutDigTile;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
@@ -12,10 +12,10 @@ import java.io.IOException;
 
 public class PacketHandler extends ChannelDuplexHandler {
 
-    private final ServerConnection connection;
+    private final PlayerConnection connection;
 
-    public PacketHandler(ServerConnection connection) {
-        this.connection = connection;
+    public PacketHandler(PlayerConnection controller) {
+        this.connection = controller;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class PacketHandler extends ChannelDuplexHandler {
         }
 
         if(packet instanceof PacketInOutPlayerUpdate playerPacket) {
-            connection.lastUpdate = playerPacket;
+            connection.handlePlayerUpdate(playerPacket);
         }
 
         if(packet instanceof PacketInOutDigTile digPacket) {

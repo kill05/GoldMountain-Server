@@ -11,10 +11,7 @@ public abstract class PacketInOutHumanEntityUpdate implements Packet {
 
     protected short entityId;
 
-    protected Vector2f location;
-    protected Vector2f nextLocation;
-    protected Vector2f nextLocation1;
-    protected Vector2f nextLocation2;
+    protected Vector2f[] checkpoints;
     private short speed;
 
     private int unknown_0;
@@ -26,15 +23,12 @@ public abstract class PacketInOutHumanEntityUpdate implements Packet {
     public PacketInOutHumanEntityUpdate(HumanEntity human) {
         this.entityId = human.getId();
 
-        this.location = human.getLocation();
-        this.nextLocation = human.getFirstTargetLocation();
-        this.nextLocation1 = human.getSecondTargetLocation();
-        this.nextLocation2 = human.getThirdTargetLocation();
+        this.checkpoints = human.getCheckpoints();
         this.speed = human.getSpeed();
 
-        this.unknown_0 = 0xffff_ffff; // change once you understand what it does
-        this.costume = human.getFakeCostume();
-        this.targetTileId = 0xffff_ffff; // change once you understand what it does
+        this.unknown_0 = 0xffff_ffff; // change once I understand what it does
+        this.costume = human.getDisplayCostume();
+        this.targetTileId = 0xffff_ffff; // change once I understand what it does
     }
 
     public PacketInOutHumanEntityUpdate() {
@@ -47,10 +41,10 @@ public abstract class PacketInOutHumanEntityUpdate implements Packet {
         serializer.writeShortLE(entityId);
         encodeLevel(serializer);
 
-        serializer.writeLocation(location);
-        serializer.writeLocation(nextLocation);
-        serializer.writeLocation(nextLocation1);
-        serializer.writeLocation(nextLocation2);
+        for (Vector2f checkpoint : checkpoints) {
+            serializer.writeLocation(checkpoint);
+        }
+
         serializer.writeShortLE(speed);
 
         serializer.writeInt(unknown_0);
@@ -71,10 +65,11 @@ public abstract class PacketInOutHumanEntityUpdate implements Packet {
         entityId = serializer.readShortLE();
         decodeLevel(serializer);
 
-        location = serializer.readLocation();
-        nextLocation = serializer.readLocation();
-        nextLocation1 = serializer.readLocation();
-        nextLocation2 = serializer.readLocation();
+        checkpoints = new Vector2f[4];
+        for(int i = 0; i < 4; i++) {
+            checkpoints[i] = serializer.readLocation();
+        }
+
         speed = serializer.readShortLE();
 
         unknown_0 = serializer.readInt();
@@ -109,37 +104,12 @@ public abstract class PacketInOutHumanEntityUpdate implements Packet {
         this.entityId = entityId;
     }
 
-
-    public Vector2f getLocation() {
-        return location;
+    public Vector2f[] getCheckpoints() {
+        return checkpoints;
     }
 
-    public void setLocation(Vector2f location) {
-        this.location = location;
-    }
-
-    public Vector2f getNextLocation() {
-        return nextLocation;
-    }
-
-    public void setNextLocation(Vector2f nextLocation) {
-        this.nextLocation = nextLocation;
-    }
-
-    public Vector2f getNextLocation1() {
-        return nextLocation1;
-    }
-
-    public void setNextLocation1(Vector2f nextLocation1) {
-        this.nextLocation1 = nextLocation1;
-    }
-
-    public Vector2f getNextLocation2() {
-        return nextLocation2;
-    }
-
-    public void setNextLocation2(Vector2f nextLocation2) {
-        this.nextLocation2 = nextLocation2;
+    public void setCheckpoints(Vector2f[] checkpoints) {
+        this.checkpoints = checkpoints;
     }
 
     public short getSpeed() {

@@ -24,6 +24,15 @@ public class ServerPlayer extends HumanEntity {
     }
 
 
+    public int getTotalLevel() {
+        return totalLevel;
+    }
+
+    public void updateTotalLevel(int totalLevel) {
+        this.totalLevel = totalLevel;
+    }
+
+
     @Override
     public short getId() {
         return id;
@@ -32,11 +41,5 @@ public class ServerPlayer extends HumanEntity {
     @Override
     public PlayerConnection getConnection() {
         return connection;
-    }
-
-
-
-    public int getTotalLevel() {
-        return totalLevel;
     }
 }
