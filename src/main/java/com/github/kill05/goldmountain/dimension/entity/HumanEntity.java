@@ -2,6 +2,7 @@ package com.github.kill05.goldmountain.dimension.entity;
 
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.PlayerConnection;
+import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutHumanEntityUpdate;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class HumanEntity extends Entity {
@@ -9,7 +10,7 @@ public abstract class HumanEntity extends Entity {
     protected PlayerCostume costume;
     protected PlayerCostume displayCostume;
 
-    protected int targetTileId;
+    protected int targetTile;
 
 
     public HumanEntity(GMServer server) {
@@ -21,14 +22,11 @@ public abstract class HumanEntity extends Entity {
 
     public abstract PlayerConnection getConnection();
 
+    public abstract void update(PacketInOutHumanEntityUpdate packet);
 
 
     public PlayerCostume getCostume() {
         return costume != null ? costume : PlayerCostume.DEFAULT;
-    }
-
-    public void updateCostume(PlayerCostume costume) {
-        this.costume = costume;
     }
 
     public PlayerCostume getDisplayCostume() {
@@ -39,12 +37,7 @@ public abstract class HumanEntity extends Entity {
         this.displayCostume = displayCostume;
     }
 
-
-    public int getTargetTileId() {
-        return targetTileId;
-    }
-
-    public void updateTargetTileId(int targetTileId) {
-        this.targetTileId = targetTileId;
+    public int getTargetTile() {
+        return targetTile;
     }
 }

@@ -34,7 +34,7 @@ public class PlayerInfoCommand extends Command {
             System.out.println("speed:         " + player.getSpeed());
             //logPacket("action info:  ", IdentifiableEnumHelper.fromId(PlayerAction.class, player.getUnknown_0()));
             System.out.println("costume:       " + player.getCostume());
-            System.out.println("breaking info: " + player.getTargetTileId());
+            System.out.println("breaking info: " + player.getTargetTile());
             System.out.println("=======================================================================================");
         } catch (NumberFormatException e) {
             sender.sendMessage("Please provide a valid player id.");
