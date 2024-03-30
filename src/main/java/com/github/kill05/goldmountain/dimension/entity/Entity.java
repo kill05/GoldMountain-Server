@@ -1,11 +1,14 @@
 package com.github.kill05.goldmountain.dimension.entity;
 
 import com.github.kill05.goldmountain.GMServer;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import org.joml.Vector2f;
 
 public abstract class Entity {
 
     protected final GMServer server;
+    protected DimensionType dimensionType;
+    protected float floor;
     protected Vector2f[] checkpoints;
     protected short speed;
 
@@ -13,6 +16,12 @@ public abstract class Entity {
         this.server = server;
         this.checkpoints = new Vector2f[4];
     }
+
+
+    public void tick() {
+
+    }
+
 
     public Vector2f getLocation() {
         return checkpoints[0];
@@ -34,17 +43,12 @@ public abstract class Entity {
         return checkpoints;
     }
 
-    public void updateCheckpoints(Vector2f[] checkpoints) {
-        this.checkpoints = checkpoints;
-    }
-
     public short getSpeed() {
         return speed;
     }
 
-    public void updateSpeed(short speed) {
-        this.speed = speed;
-    }
+
+
 
     public GMServer getServer() {
         return server;

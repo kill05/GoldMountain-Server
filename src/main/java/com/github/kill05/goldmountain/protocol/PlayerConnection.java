@@ -45,12 +45,7 @@ public class PlayerConnection {
 
 
     public void handlePlayerUpdate(PacketInOutPlayerUpdate packet) {
-        player.updateTotalLevel(packet.getTotalLevel());
-        player.updateCostume(packet.getCostume());
-        player.updateSpeed(packet.getSpeed());
-        player.updateCheckpoints(packet.getCheckpoints());
-        player.updateTargetTileId(packet.getTargetTileId());
-
+        player.update(packet);
         ticksSinceUpdate = 0;
     }
 
