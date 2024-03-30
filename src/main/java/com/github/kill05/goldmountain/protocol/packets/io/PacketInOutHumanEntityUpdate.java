@@ -137,7 +137,7 @@ public abstract class PacketInOutHumanEntityUpdate implements Packet {
         this.costume = costume;
     }
 
-    public int getTargetTileId() {
+    public int getTargetTile() {
         return targetTileId;
     }
 
