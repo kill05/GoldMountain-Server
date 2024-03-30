@@ -3,6 +3,8 @@ package com.github.kill05.goldmountain.protocol.packets.io;
 import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 
+import java.util.Arrays;
+
 public class PacketInOutPlayerUpdate extends PacketInOutHumanEntityUpdate {
 
     private int totalLevel;
@@ -29,7 +31,7 @@ public class PacketInOutPlayerUpdate extends PacketInOutHumanEntityUpdate {
     @Override
     public void decodeEnd(PacketSerializer serializer) {
         serializer.readInt();   // ignored, always 0000_0000
-        serializer.readShort(); // ignored, always e803 (which is 1000 in base 10, maybe there's a reason) (could be game version/protocol version?)
+        serializer.readShort(); // ignored, always e803 (which is 1000 in base 10, maybe there's a reason) (could be the game version/protocol version?)
     }
 
     @Override
@@ -47,4 +49,16 @@ public class PacketInOutPlayerUpdate extends PacketInOutHumanEntityUpdate {
         this.totalLevel = totalLevel;
     }
 
+
+    @Override
+    public String toString() {
+        return "PacketInOutPlayerUpdate{" +
+                "entityId=" + entityId +
+                ", totalLevel=" + totalLevel +
+                ", checkpoints=" + Arrays.toString(checkpoints) +
+                ", speed=" + speed +
+                ", costume=" + costume +
+                ", targetTileId=" + targetTileId +
+                '}';
+    }
 }

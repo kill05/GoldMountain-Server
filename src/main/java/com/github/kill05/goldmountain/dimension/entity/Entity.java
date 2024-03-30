@@ -1,73 +1,52 @@
 package com.github.kill05.goldmountain.dimension.entity;
 
 import com.github.kill05.goldmountain.GMServer;
-import com.github.kill05.goldmountain.dimension.DimensionType;
-import com.github.kill05.goldmountain.protocol.packets.out.PacketOutChangeDimension;
 import org.joml.Vector2f;
 
 public abstract class Entity {
 
     protected final GMServer server;
-
-    protected DimensionType currentDimension;
-    protected int currentFloor;
-
-    protected final Vector2f location;
-    protected final Vector2f firstTargetLocation;
-    protected final Vector2f secondTargetLocation;
-    protected final Vector2f thirdTargetLocation;
+    protected Vector2f[] checkpoints;
     protected short speed;
-
 
     public Entity(GMServer server) {
         this.server = server;
-        this.location = new Vector2f();
-        this.firstTargetLocation = new Vector2f();
-        this.secondTargetLocation = new Vector2f();
-        this.thirdTargetLocation = new Vector2f();
+        this.checkpoints = new Vector2f[4];
     }
-
-
-    public DimensionType getDimensionType() {
-        return currentDimension != null ? currentDimension : DimensionType.SPAWN;
-    }
-
-    public int getFloor() {
-        return currentFloor;
-    }
-
-
-    private void sendDimensionPacket() {
-        if(!(this instanceof ServerPlayer player)) return;
-        player.getConnection().sendPacket(new PacketOutChangeDimension(getDimensionType()));
-    }
-
-    public void syncPosition() {
-        if(!(this instanceof ServerPlayer player)) return;
-        for(int i = 0; i <= currentFloor; i++) {
-            sendDimensionPacket();
-        }
-    }
-
 
     public Vector2f getLocation() {
-        return location;
+        return checkpoints[0];
     }
 
-    public Vector2f getFirstTargetLocation() {
-        return firstTargetLocation;
+    /**
+     * Method to get the checkpoints the entity will follow to get to its destination.
+     * It's not sure yet whether these waypoints exist for each entity or they are exclusive
+     * to human entities (player and shadow clone).
+     * <p>
+     * The first waypoint is the current location of the entity, and the other 3 are the next 3 points
+     * the entity will travel to.
+     * <p>
+     * If the first waypoint is the same as the second one, that means the entity is standing still.
+     *
+     * @return the 4 checkpoints the entity will travel to to move towards its target
+     */
+    public Vector2f[] getCheckpoints() {
+        return checkpoints;
     }
 
-    public Vector2f getSecondTargetLocation() {
-        return secondTargetLocation;
-    }
-
-    public Vector2f getThirdTargetLocation() {
-        return thirdTargetLocation;
+    public void updateCheckpoints(Vector2f[] checkpoints) {
+        this.checkpoints = checkpoints;
     }
 
     public short getSpeed() {
         return speed;
     }
 
+    public void updateSpeed(short speed) {
+        this.speed = speed;
+    }
+
+    public GMServer getServer() {
+        return server;
+    }
 }

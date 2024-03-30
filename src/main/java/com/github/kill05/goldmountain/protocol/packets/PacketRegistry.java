@@ -9,6 +9,7 @@ import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutShadowClone
 import com.github.kill05.goldmountain.protocol.packets.out.actions.PacketOutExecuteClientAction;
 import com.github.kill05.goldmountain.protocol.packets.out.PacketOutStaircaseLocation;
 
+import java.io.IOException;
 import java.util.*;
 
 public class PacketRegistry {
@@ -89,13 +90,13 @@ public class PacketRegistry {
         return getPacket(packet.getClass());
     }
 
-    public Packet createInboundPacket(int id) {
+    public Packet createInboundPacket(int id) throws IOException {
         RegisteredPacket packet = getInboundPacket(id);
         if(packet != null) return packet.constructPacket();
         return null;
     }
 
-    public Packet createPacket(Class<? extends Packet> clazz) {
+    public Packet createPacket(Class<? extends Packet> clazz) throws IOException {
         RegisteredPacket packet = getPacket(clazz);
         if(packet != null) return packet.constructPacket();
         return null;

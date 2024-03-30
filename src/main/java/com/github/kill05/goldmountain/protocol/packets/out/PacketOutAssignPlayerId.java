@@ -24,4 +24,11 @@ public class PacketOutAssignPlayerId implements Packet {
     public void decode(PacketSerializer serializer) {
 
     }
+
+    @Override
+    public String toString() {
+        return "PacketOutAssignPlayerId{" +
+                "id=" + id +
+                '}';
+    }
 }
