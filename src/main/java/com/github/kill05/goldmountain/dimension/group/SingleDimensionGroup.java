@@ -13,7 +13,12 @@ public class SingleDimensionGroup extends DimensionGroup {
     }
 
     @Override
-    public ServerDimension getDimensionNullable(int floor) {
+    public void tick() {
+        dimension.tick();
+    }
+
+    @Override
+    public ServerDimension getDimension(int floor) {
         return dimension;
     }
 

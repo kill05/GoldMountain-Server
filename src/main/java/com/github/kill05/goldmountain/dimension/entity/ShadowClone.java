@@ -1,6 +1,7 @@
 package com.github.kill05.goldmountain.dimension.entity;
 
 import com.github.kill05.goldmountain.protocol.PlayerConnection;
+import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutHumanEntityUpdate;
 
 public class ShadowClone extends HumanEntity {
 
@@ -23,6 +24,11 @@ public class ShadowClone extends HumanEntity {
     @Override
     public PlayerConnection getConnection() {
         return owner.getConnection();
+    }
+
+    @Override
+    public void update(PacketInOutHumanEntityUpdate packet) {
+
     }
 
 }

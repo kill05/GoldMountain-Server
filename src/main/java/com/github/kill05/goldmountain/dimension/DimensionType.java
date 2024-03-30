@@ -1,6 +1,8 @@
 package com.github.kill05.goldmountain.dimension;
 
+import com.github.kill05.goldmountain.dimension.entity.Entity;
 import com.github.kill05.goldmountain.protocol.enums.Identifiable;
+import com.github.kill05.goldmountain.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -84,6 +86,11 @@ public enum DimensionType implements Identifiable<DimensionType> {
         return maxFloor < 0;
     }
 
+    public boolean isValidFloor(int floor) {
+        return floor >= 0 && (hasInfiniteFloors() || floor < getMaxFloor());
+    }
+
+
     @NotNull
     public DimensionType getLastFloor() {
         return lastFloor != null ? lastFloor : this;
@@ -92,6 +99,15 @@ public enum DimensionType implements Identifiable<DimensionType> {
     @Nullable
     public Vector2f getLoadingZone() {
         return loadingZone != null ? new Vector2f(loadingZone) : null;
+    }
+
+    public boolean hasLoadingZone() {
+        return loadingZone != null;
+    }
+
+    public boolean isOnLoadingZone(Entity entity) {
+        if(!hasLoadingZone()) return false;
+        return Utils.isSameTile(entity.getLocation(), loadingZone);
     }
 
 

@@ -6,15 +6,15 @@ import com.github.kill05.goldmountain.protocol.enums.IdentifiableEnumHelper;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import org.jetbrains.annotations.Nullable;
 
-public class PacketOutChangeDimension implements Packet {
+public class PacketOutUpdateDimension implements Packet {
 
     private byte dimensionId;
 
-    public PacketOutChangeDimension(@Nullable DimensionType dimensionType) {
+    public PacketOutUpdateDimension(@Nullable DimensionType dimensionType) {
         setDimension(dimensionType);
     }
 
-    public PacketOutChangeDimension(int dimID) {
+    public PacketOutUpdateDimension(int dimID) {
         setDimensionId(dimID);
     }
 

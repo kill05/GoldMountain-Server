@@ -2,13 +2,16 @@ package com.github.kill05.goldmountain.dimension.entity;
 
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.dimension.DimensionType;
+import com.github.kill05.goldmountain.dimension.ServerDimension;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 
 public abstract class Entity {
 
     protected final GMServer server;
     protected DimensionType dimensionType;
-    protected float floor;
+    protected int floor;
     protected Vector2f[] checkpoints;
     protected short speed;
 
@@ -20,6 +23,34 @@ public abstract class Entity {
 
     public void tick() {
 
+    }
+
+
+    public @Nullable ServerDimension getDimension() {
+        if(dimensionType == null) return null;
+        return server.getDimensionController().getOrCreateDimension(dimensionType, floor);
+    }
+
+    public void setDimension(@NotNull DimensionType type, int floor) {
+        if(!type.isValidFloor(floor)) {
+            throw new IllegalArgumentException(String.format("Floor %s is not a valid floor for dimension %s.", floor, type));
+        }
+
+        // getDimension returns two different dimensions because the type and floor fields are different between each call
+        ServerDimension dimension = getDimension();
+        if(dimension != null) dimension.removeEntityUnsafe(this);
+
+        this.dimensionType = type;
+        this.floor = floor;
+        getDimension().addEntityUnsafe(this);
+    }
+
+    public void setDimension(DimensionType type) {
+        setDimension(type, 0);
+    }
+
+    public void descend() {
+        setDimension(this.dimensionType, this.floor + 1);
     }
 
 
@@ -46,8 +77,6 @@ public abstract class Entity {
     public short getSpeed() {
         return speed;
     }
-
-
 
 
     public GMServer getServer() {

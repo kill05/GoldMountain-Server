@@ -1,6 +1,7 @@
 package com.github.kill05.goldmountain.protocol;
 
 import com.github.kill05.goldmountain.GMServer;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
@@ -94,12 +95,10 @@ public class PlayerController {
     }
 
 
+    //todo: process incoming packet queue
     public void tick() {
-        for (ServerPlayer player : players.values()) {
-            player.tick();
-        }
-    }
 
+    }
 
     public void shutdown() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(2);
@@ -114,6 +113,7 @@ public class PlayerController {
     private void handleConnect(Channel channel) {
         ServerPlayer player = getPlayer(channel);
         player.getConnection().sendPacket(new PacketOutAssignPlayerId(player.getId()));
+        player.setDimension(DimensionType.SPAWN);
 
         SocketAddress address = channel.remoteAddress();
         GMServer.logger.info(String.format("Player (id: %s, address: %s) connected.", player.getId(), address));

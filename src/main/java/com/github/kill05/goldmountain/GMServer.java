@@ -1,6 +1,7 @@
 package com.github.kill05.goldmountain;
 
 import com.github.kill05.goldmountain.commands.CommandHandler;
+import com.github.kill05.goldmountain.dimension.DimensionController;
 import com.github.kill05.goldmountain.dimension.entity.PlayerCostume;
 import com.github.kill05.goldmountain.protocol.PlayerController;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
@@ -15,6 +16,7 @@ public class GMServer {
 
     private Thread serverThread;
     private PlayerController playerController;
+    private DimensionController dimensionController;
     private CommandHandler commandHandler;
     private long currentTick;
     private float tps;
@@ -31,6 +33,7 @@ public class GMServer {
         this.serverThread = new Thread(null, () -> {
             try {
                 this.playerController = new PlayerController(this);
+                this.dimensionController = new DimensionController();
                 this.commandHandler = new CommandHandler(this);
             } catch (Exception e) {
                 logger.error("There was an error while loading the server.", e);
@@ -45,6 +48,8 @@ public class GMServer {
 
         //Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
+
+
 
     private void startGameLoop() {
         final double timeU = 1e9 / TARGET_TPS;
@@ -74,6 +79,7 @@ public class GMServer {
     private void tick() {
         //commandHandler.executeCommand("/test2 0000 4368b73f");
         playerController.tick();
+        dimensionController.tick();
         commandHandler.processInput();
     }
 
@@ -123,6 +129,10 @@ public class GMServer {
 
     public PlayerController getPlayerController() {
         return playerController;
+    }
+
+    public DimensionController getDimensionController() {
+        return dimensionController;
     }
 
     public CommandHandler getCommandHandler() {

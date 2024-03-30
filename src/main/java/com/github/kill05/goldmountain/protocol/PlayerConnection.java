@@ -25,8 +25,10 @@ public class PlayerConnection {
 
 
     public void tick() {
-        PacketInOutPlayerUpdate update = new PacketInOutPlayerUpdate(player);
-        sendPacketToOthers(update);
+        if(player.getLocation() != null) {
+            PacketInOutPlayerUpdate update = new PacketInOutPlayerUpdate(player);
+            sendPacketToOthers(update);
+        }
     }
 
 

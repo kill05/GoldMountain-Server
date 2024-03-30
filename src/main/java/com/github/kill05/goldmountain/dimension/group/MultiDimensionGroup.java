@@ -17,18 +17,25 @@ public class MultiDimensionGroup extends DimensionGroup {
     }
 
     @Override
-    public ServerDimension getDimensionNullable(int floor) {
+    public void tick() {
+        for (ServerDimension dimension : floorDimensionMap.values()) {
+            dimension.tick();
+        }
+    }
+
+    @Override
+    public ServerDimension getDimension(int floor) {
         return floorDimensionMap.get(floor);
     }
 
-    @NotNull
     @Override
-    public ServerDimension createDimension(int floor) {
-        ServerDimension dimension = new ServerDimension(this, floor);
-        if(floorDimensionMap.put(floor, dimension) != null) {
+    public @NotNull ServerDimension createDimension(int floor) {
+        if(floorDimensionMap.containsKey(floor)) {
             throw new IllegalStateException(String.format("Multi Dimension group already has a dimension for floor %s.", floor));
         }
 
+        ServerDimension dimension = new ServerDimension(this, floor);
+        floorDimensionMap.put(floor, dimension);
         return dimension;
     }
 

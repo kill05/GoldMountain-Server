@@ -16,21 +16,21 @@ public abstract class DimensionGroup {
     }
 
 
-    @Nullable
-    public abstract ServerDimension getDimensionNullable(int floor);
+    public abstract void tick();
 
-    @NotNull
-    protected abstract ServerDimension createDimension(int floor);
+    public abstract @Nullable ServerDimension getDimension(int floor);
+
+    protected abstract @NotNull ServerDimension createDimension(int floor);
 
     public abstract void deleteDimension(int floor);
 
+
     public boolean dimensionExists(int floor) {
-        return getDimensionNullable(floor) != null;
+        return getDimension(floor) != null;
     }
 
-    @NotNull
-    public ServerDimension getOrCreateDimension(int floor) {
-        ServerDimension dimension = getDimensionNullable(floor);
+    public @NotNull ServerDimension getOrCreateDimension(int floor) {
+        ServerDimension dimension = getDimension(floor);
         if(dimension != null) return dimension;
 
         return createDimension(floor);
