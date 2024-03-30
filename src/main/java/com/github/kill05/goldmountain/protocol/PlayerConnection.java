@@ -1,60 +1,66 @@
 package com.github.kill05.goldmountain.protocol;
 
+import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutShadowCloneUpdate;
 import io.netty.channel.Channel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
 
 public class PlayerConnection {
 
+    public static int PLAYER_TIMEOUT = GMServer.TARGET_TPS * 2;
+
     private final ServerPlayer player;
     private final Channel channel;
-    private final List<Packet> packetQueue;
 
     private int ticksSinceUpdate;
-    private int ticksSinceCloneUpdate;
 
     public PlayerConnection(ServerPlayer player, Channel channel) {
         this.player = player;
         this.channel = channel;
-        this.packetQueue = Collections.synchronizedList(new ArrayList<>());
-    }
-
-    public void sendPacket(Packet packet) {
-        synchronized (packetQueue) {
-            packetQueue.add(packet);
-        }
-    }
-
-    public void processPacketQueue() {
-
     }
 
 
     public void tick() {
-        ticksSinceUpdate++;
-        ticksSinceCloneUpdate++;
+        PacketInOutPlayerUpdate update = new PacketInOutPlayerUpdate(player);
+        sendPacketToOthers(update);
+    }
+
+
+    public void sendPacket(Packet packet) {
+        if(!isActive()) return;
+        channel.writeAndFlush(packet);
+    }
+
+    public void sendPacketToOthers(Packet packet) {
+        Collection<ServerPlayer> players = player.getServer().getPlayerController().getPlayers();
+        for (ServerPlayer serverPlayer : players) {
+            if(serverPlayer == player) continue;
+            serverPlayer.getConnection().sendPacket(packet);
+        }
     }
 
 
     public void handlePlayerUpdate(PacketInOutPlayerUpdate packet) {
+        player.updateTotalLevel(packet.getTotalLevel());
+        player.updateCostume(packet.getCostume());
+        player.updateSpeed(packet.getSpeed());
+        player.updateCheckpoints(packet.getCheckpoints());
+        player.updateTargetTileId(packet.getTargetTileId());
+
         ticksSinceUpdate = 0;
     }
 
     public void handleCloneUpdate(PacketInOutShadowCloneUpdate packet) {
-        ticksSinceCloneUpdate = 0;
     }
 
 
-    public void updateDimension(boolean syncFloor) {
-
+    public boolean isActive() {
+        return ticksSinceUpdate < PLAYER_TIMEOUT;
     }
-
 
     public ServerPlayer getPlayer() {
         return player;

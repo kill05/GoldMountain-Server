@@ -3,6 +3,7 @@ package com.github.kill05.goldmountain.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.util.ByteProcessor;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class PacketSerializer extends ByteBuf implements AutoCloseable {
         return byteBuf.readShortLE() / TILE_SIZE;
     }
     
-    public void writeLocation(Vector2f location) {
+    public void writeLocation(@Nullable Vector2f location) {
         float x = location != null ? location.x : 0f;
         float y = location != null ? location.y : 0f;
         writeLocation(x, y);

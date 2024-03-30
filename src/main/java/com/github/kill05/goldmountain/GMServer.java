@@ -2,7 +2,7 @@ package com.github.kill05.goldmountain;
 
 import com.github.kill05.goldmountain.commands.CommandHandler;
 import com.github.kill05.goldmountain.dimension.entity.PlayerCostume;
-import com.github.kill05.goldmountain.protocol.ServerConnection;
+import com.github.kill05.goldmountain.protocol.PlayerController;
 import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +14,7 @@ public class GMServer {
     public static final Logger logger = LogManager.getLogger(GMServer.class);
 
     private Thread serverThread;
-    private ServerConnection serverConnection;
+    private PlayerController playerController;
     private CommandHandler commandHandler;
     private long currentTick;
     private float tps;
@@ -30,7 +30,7 @@ public class GMServer {
 
         this.serverThread = new Thread(null, () -> {
             try {
-                this.serverConnection = new ServerConnection(this);
+                this.playerController = new PlayerController(this);
                 this.commandHandler = new CommandHandler(this);
             } catch (Exception e) {
                 logger.error("There was an error while loading the server.", e);
@@ -73,9 +73,14 @@ public class GMServer {
 
     private void tick() {
         //commandHandler.executeCommand("/test2 0000 4368b73f");
+        playerController.tick();
         commandHandler.processInput();
     }
 
+
+    public void sendTestPlayer(short id, Vector2f loc) {
+        sendTestPlayer(id, loc, loc, loc, loc);
+    }
 
     public void sendTestPlayer(short id, Vector2f loc1, Vector2f loc2, Vector2f loc3, Vector2f loc4) {
         PacketInOutPlayerUpdate packet = new PacketInOutPlayerUpdate();
@@ -91,12 +96,11 @@ public class GMServer {
         packet.setSpeed((short) 0x0040);
         packet.setUnknown_3((short) 0x4300);
 
-        packet.setLocation(loc1);
-        packet.setNextLocation(loc2);
-        packet.setNextLocation1(loc3);
-        packet.setNextLocation2(loc4);
+        packet.setCheckpoints(new Vector2f[]{
+                loc1, loc2, loc3, loc4
+        });
 
-        serverConnection.sendPacket(packet);
+        playerController.broadcastPacket(packet);
     }
 
 
@@ -104,7 +108,7 @@ public class GMServer {
         logger.info("Closing server...");
 
         try {
-            serverConnection.shutdown();
+            playerController.shutdown();
         } catch (InterruptedException e) {
             logger.warn("Failed to gracefully shutdown server.", e);
         }
@@ -117,8 +121,8 @@ public class GMServer {
         return serverThread;
     }
 
-    public ServerConnection getConnection() {
-        return serverConnection;
+    public PlayerController getPlayerController() {
+        return playerController;
     }
 
     public CommandHandler getCommandHandler() {
