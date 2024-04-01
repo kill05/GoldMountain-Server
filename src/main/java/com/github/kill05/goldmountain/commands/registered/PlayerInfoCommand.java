@@ -3,7 +3,7 @@ package com.github.kill05.goldmountain.commands.registered;
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.commands.Command;
 import com.github.kill05.goldmountain.commands.senders.CommandSender;
-import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
+import com.github.kill05.goldmountain.dimension.entity.player.ServerPlayer;
 import com.github.kill05.goldmountain.utils.Utils;
 
 public class PlayerInfoCommand extends Command {
@@ -27,7 +27,7 @@ public class PlayerInfoCommand extends Command {
             }
 
             System.out.println("=======================================================================================");
-            System.out.println("player id:     " + player.getId());
+            System.out.println("player tileId:     " + player.getId());
             System.out.println("total level:   " + player.getTotalLevel());
             System.out.println("position:      " + Utils.vecToString(player.getCheckpoints()[0]));
             System.out.println("next position: " + Utils.vecToString(player.getCheckpoints()[1]));
@@ -37,7 +37,7 @@ public class PlayerInfoCommand extends Command {
             System.out.println("breaking info: " + player.getTargetTile());
             System.out.println("=======================================================================================");
         } catch (NumberFormatException e) {
-            sender.sendMessage("Please provide a valid player id.");
+            sender.sendMessage("Please provide a valid player tileId.");
         }
     }
 }

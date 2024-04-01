@@ -1,10 +1,10 @@
 package com.github.kill05.goldmountain.protocol;
 
 import com.github.kill05.goldmountain.GMServer;
-import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
+import com.github.kill05.goldmountain.dimension.entity.player.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutShadowCloneUpdate;
+import com.github.kill05.goldmountain.protocol.packets.io.CloneUpdatePacket;
+import com.github.kill05.goldmountain.protocol.packets.io.PlayerUpdatePacket;
 import io.netty.channel.Channel;
 
 import java.util.Collection;
@@ -26,7 +26,7 @@ public class PlayerConnection {
 
     public void tick() {
         if(player.getLocation() != null) {
-            PacketInOutPlayerUpdate update = new PacketInOutPlayerUpdate(player);
+            PlayerUpdatePacket update = new PlayerUpdatePacket(player);
             sendPacketToOthers(update);
         }
     }
@@ -46,12 +46,12 @@ public class PlayerConnection {
     }
 
 
-    public void handlePlayerUpdate(PacketInOutPlayerUpdate packet) {
+    public void handlePlayerUpdate(PlayerUpdatePacket packet) {
         player.update(packet);
         ticksSinceUpdate = 0;
     }
 
-    public void handleCloneUpdate(PacketInOutShadowCloneUpdate packet) {
+    public void handleCloneUpdate(CloneUpdatePacket packet) {
     }
 
 

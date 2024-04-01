@@ -3,17 +3,7 @@ package com.github.kill05.goldmountain.protocol.packets.out;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 
-public class PacketOutAssignPlayerId implements Packet {
-
-    private int id;
-
-    public PacketOutAssignPlayerId(int id) {
-        this.id = id;
-    }
-
-    public PacketOutAssignPlayerId() {
-    }
-
+public record AssignIdPacket(int id) implements Packet {
 
     @Override
     public void encode(PacketSerializer serializer) {
@@ -21,14 +11,14 @@ public class PacketOutAssignPlayerId implements Packet {
     }
 
     @Override
-    public void decode(PacketSerializer serializer) {
-
+    public int packetId() {
+        return 0x07;
     }
 
     @Override
     public String toString() {
         return "PacketOutAssignPlayerId{" +
-                "id=" + id +
+                "tileId=" + id +
                 '}';
     }
 }

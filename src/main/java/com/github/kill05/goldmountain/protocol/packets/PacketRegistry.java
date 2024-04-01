@@ -1,105 +1,54 @@
 package com.github.kill05.goldmountain.protocol.packets;
 
-import com.github.kill05.goldmountain.GMServer;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutDigTile;
-import com.github.kill05.goldmountain.protocol.packets.out.PacketOutAssignPlayerId;
-import com.github.kill05.goldmountain.protocol.packets.out.PacketOutUpdateDimension;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutShadowCloneUpdate;
-import com.github.kill05.goldmountain.protocol.packets.out.actions.PacketOutExecuteClientAction;
-import com.github.kill05.goldmountain.protocol.packets.out.PacketOutStaircaseLocation;
+import com.github.kill05.goldmountain.protocol.PacketSerializer;
+import com.github.kill05.goldmountain.protocol.packets.io.CloneUpdatePacket;
+import com.github.kill05.goldmountain.protocol.packets.io.DigTilePacket;
+import com.github.kill05.goldmountain.protocol.packets.io.PlayerUpdatePacket;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public class PacketRegistry {
 
-    private static PacketRegistry instance;
-    private final Map<Integer, RegisteredPacket> inboundPacketIdMap;
-    private final Map<Class<? extends Packet>, RegisteredPacket> packetClassMap;
+    private final Map<Integer, Function<PacketSerializer, ? extends IOPacket>> factoryMap;
 
+    public PacketRegistry() {
+        this.factoryMap = new HashMap<>();
 
-    private PacketRegistry() {
-        this.inboundPacketIdMap = new HashMap<>();
-        this.packetClassMap = new HashMap<>();
+        registerInboundPacket(0x01, PlayerUpdatePacket::new);
+        registerInboundPacket(0x02, CloneUpdatePacket::new);
+        registerInboundPacket(0x03, DigTilePacket::new);
 
-        register(0x01, PacketInOutPlayerUpdate.class, PacketDirection.BOTH);
-        register(0x02, PacketInOutShadowCloneUpdate.class, PacketDirection.BOTH);
-        register(0x03, PacketInOutDigTile.class, PacketDirection.BOTH);
-
-        register(0x04, PacketOutUpdateDimension.class, PacketDirection.OUTBOUND);
-        register(0x05, PacketOutExecuteClientAction.class, PacketDirection.OUTBOUND);
-        register(0x06, PacketOutStaircaseLocation.class, PacketDirection.OUTBOUND);
-        register(0x07, PacketOutAssignPlayerId.class, PacketDirection.OUTBOUND);
+        //registerPacket(0x04, UpdateDimensionPacket.class);
+        //registerPacket(0x05, IExecuteActionPacket.class);
+        //registerPacket(0x06, CreateStaircasePacket.class);
+        //registerPacket(0x07, AssignIdPacket.class);
     }
 
 
-    public static PacketRegistry instance() {
-        return instance == null ? (instance = new PacketRegistry()) : instance;
-    }
-
-
-    private <T extends Packet> void register(int id, Class<T> packetClass, PacketDirection direction) {
-        RegisteredPacket packet = new RegisteredPacket(id, packetClass, direction);
-
-        if(direction.isInbound()) {
-            if(inboundPacketIdMap.containsKey(id))
-                throw new IllegalArgumentException(String.format("Duplicate inbound packet id: %s", Integer.toHexString(id)));
-
-            try {
-                packetClass.getConstructor();
-            } catch (NoSuchMethodException e) {
-                throw new IllegalArgumentException(String.format("Inbound packet %s doesn't have a zero argument constructor.", packetClass), e);
-            }
-
-            inboundPacketIdMap.put(id, packet);
+    public <T extends IOPacket> void registerInboundPacket(int id, Function<PacketSerializer, T> factory) {
+        if (factoryMap.containsKey(id)) {
+            throw new IllegalArgumentException(String.format("Duplicate inbound packet id: %s", Integer.toHexString(id)));
         }
 
-        packetClassMap.put(packetClass, packet);
-    }
-
-    public RegisteredPacket getInboundPacket(int id) {
-        RegisteredPacket packet = inboundPacketIdMap.get(id);
-        if(packet == null) GMServer.logger.warn(String.format("Unregistered inbound packet: 0x%02x.", id));
-        return packet;
-    }
-
-    public RegisteredPacket getPacket(Class<? extends Packet> clazz) {
-        RegisteredPacket packet = getPacket0(clazz);
-        if(packet == null && !clazz.isInstance(UnregisteredPacket.class)) GMServer.logger.warn(String.format("Unregistered packet: %s.", clazz));
-        return packet;
-    }
-
-    @SuppressWarnings("unchecked")
-    private RegisteredPacket getPacket0(Class<? extends Packet> clazz) {
-        RegisteredPacket packet = packetClassMap.get(clazz);
-        if(packet != null) return packet;
-
-        Class<?> superclass = clazz.getSuperclass();
-        if(!Packet.class.isAssignableFrom(superclass)) return null;
-
-        Class<? extends Packet> superPacketClass = (Class<? extends Packet>) superclass;
-        RegisteredPacket superPacket = getPacket0(superPacketClass);
-        if(superPacket != null) packetClassMap.put(superPacketClass, superPacket);
-
-        return superPacket;
+        factoryMap.put(id, factory);
     }
 
 
-    public RegisteredPacket getPacket(Packet packet) {
-        return getPacket(packet.getClass());
+    protected Function<PacketSerializer, ? extends IOPacket> getPacketFactory(int id) throws IOException {
+        Function<PacketSerializer, ? extends IOPacket> factory = factoryMap.get(id);
+        if(factory == null) throw new IOException(String.format("Unregistered inbound packet id: %s", id));
+        return factory;
     }
 
-    public Packet createInboundPacket(int id) throws IOException {
-        RegisteredPacket packet = getInboundPacket(id);
-        if(packet != null) return packet.constructPacket();
-        return null;
-    }
-
-    public Packet createPacket(Class<? extends Packet> clazz) throws IOException {
-        RegisteredPacket packet = getPacket(clazz);
-        if(packet != null) return packet.constructPacket();
-        return null;
+    public IOPacket createInboundPacket(int id, PacketSerializer serializer) throws IOException {
+        try {
+            return getPacketFactory(id).apply(serializer);
+        } catch (Exception e) {
+            throw new IOException(String.format("Failed to construct inbound packet (id: %s)", id), e);
+        }
     }
 
 }

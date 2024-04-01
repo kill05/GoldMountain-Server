@@ -2,7 +2,8 @@ package com.github.kill05.goldmountain.dimension.tile;
 
 import com.github.kill05.goldmountain.protocol.enums.Identifiable;
 
-public enum OreType implements Identifiable<OreType> {
+@SuppressWarnings("unused")
+public enum TileType implements Identifiable<TileType> {
     UNKNOWN                   (0xff, 0x00, "Unknown"),
     SEAL_STONE                (0x9b, 0x00, "Seal Stone"),
     DAILY_MINE_DISPLAY        (0x9c, 0x00, "Wall"),
@@ -106,10 +107,14 @@ public enum OreType implements Identifiable<OreType> {
     private final String name;
     private final int health;
 
-    OreType(int id, int health, String name) {
+    TileType(int id, int health, String name) {
         this.id = id;
         this.health = health;
         this.name = name;
+    }
+
+    public short actionCode() {
+        return (short) getId();
     }
 
     @Override
@@ -127,7 +132,7 @@ public enum OreType implements Identifiable<OreType> {
     }
 
     @Override
-    public OreType getUnknown() {
+    public TileType getUnknown() {
         return UNKNOWN;
     }
 }

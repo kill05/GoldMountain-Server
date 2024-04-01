@@ -12,7 +12,7 @@ public abstract class Entity {
     protected final GMServer server;
     protected DimensionType dimensionType;
     protected int floor;
-    protected Vector2f[] checkpoints;
+    protected final Vector2f[] checkpoints;
     protected short speed;
 
     public Entity(GMServer server) {
@@ -74,8 +74,13 @@ public abstract class Entity {
         return checkpoints;
     }
 
+
     public short getSpeed() {
         return speed;
+    }
+
+    public void setSpeed(short speed) {
+        this.speed = speed;
     }
 
 

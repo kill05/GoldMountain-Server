@@ -1,26 +1,23 @@
-package com.github.kill05.goldmountain.dimension.entity;
+package com.github.kill05.goldmountain.dimension.entity.player;
 
 import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.protocol.PlayerConnection;
-import com.github.kill05.goldmountain.protocol.PlayerController;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutHumanEntityUpdate;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
-import com.github.kill05.goldmountain.protocol.packets.out.PacketOutUpdateDimension;
+import com.github.kill05.goldmountain.protocol.ConnectionController;
+import com.github.kill05.goldmountain.protocol.packets.io.HumanUpdatePacket;
+import com.github.kill05.goldmountain.protocol.packets.io.PlayerUpdatePacket;
+import com.github.kill05.goldmountain.protocol.packets.out.UpdateDimensionPacket;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 
-public class ServerPlayer extends HumanEntity {
+public class ServerPlayer extends PlayerEntity {
 
-    private final short id;
     private final PlayerConnection connection;
     //private ShadowClone shadowClone;
-
     private int totalLevel;
 
-    public ServerPlayer(PlayerController controller, short id, Channel channel) {
-        super(controller.getServer());
+    public ServerPlayer(ConnectionController controller, int id, Channel channel) {
+        super(controller.getServer(), id);
         this.connection = new PlayerConnection(this, channel);
-        this.id = id;
     }
 
     public void tick() {
@@ -53,25 +50,28 @@ public class ServerPlayer extends HumanEntity {
 
 
     @Override
-    public void update(PacketInOutHumanEntityUpdate packet) {
-        if(!(packet instanceof PacketInOutPlayerUpdate updatePacket)) {
+    public void update(HumanUpdatePacket packet) {
+        if(!(packet instanceof PlayerUpdatePacket updatePacket)) {
             throw new IllegalArgumentException("Packet must be a player update packet!");
         }
 
-        this.totalLevel = updatePacket.getTotalLevel();
+        this.totalLevel = updatePacket.totalLevel();
         this.costume = updatePacket.getCostume();
         this.speed = updatePacket.getSpeed();
-        this.checkpoints = updatePacket.getCheckpoints();
         this.targetTile = updatePacket.getTargetTile();
+
+        for(int i = 0; i < this.checkpoints.length; i++) {
+            this.checkpoints[i] = updatePacket.getCheckpoints()[i];
+        }
     }
 
     public void sendUpdateDimensionPacket(boolean syncFloor) {
-        PacketOutUpdateDimension packet = new PacketOutUpdateDimension(dimensionType);
+        UpdateDimensionPacket packet = new UpdateDimensionPacket(dimensionType);
 
         if(syncFloor && dimensionType.hasMultipleFloors()) {
             for(int i = 0; i < floor; i++) {
                 //todo: change with MultiPacket when tested
-                connection.sendPacket(new PacketOutUpdateDimension(DimensionType.SPAWN));
+                connection.sendPacket(new UpdateDimensionPacket(DimensionType.SPAWN));
                 connection.sendPacket(packet);
             }
 
@@ -81,20 +81,16 @@ public class ServerPlayer extends HumanEntity {
         connection.sendPacket(packet);
     }
 
-
-    public int getTotalLevel() {
-        return totalLevel;
-    }
-
-    @Override
-    public short getId() {
-        return id;
-    }
-
     @Override
     public PlayerConnection getConnection() {
         return connection;
     }
+
+    @Override
+    public int getTotalLevel() {
+        return totalLevel;
+    }
+
 
 
 }

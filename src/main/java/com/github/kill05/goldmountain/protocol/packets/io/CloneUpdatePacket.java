@@ -3,37 +3,32 @@ package com.github.kill05.goldmountain.protocol.packets.io;
 import com.github.kill05.goldmountain.dimension.entity.ShadowClone;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 
-public class PacketInOutShadowCloneUpdate extends PacketInOutHumanEntityUpdate {
+public class CloneUpdatePacket extends HumanUpdatePacket {
 
-    private short ownerId;
+    private int ownerId;
 
-    public PacketInOutShadowCloneUpdate(ShadowClone clone) {
+    public CloneUpdatePacket(ShadowClone clone) {
         super(clone);
         this.ownerId = clone.getOwnerId();
     }
 
-    public PacketInOutShadowCloneUpdate() {
-
+    public CloneUpdatePacket(PacketSerializer serializer) {
+        super(serializer);
     }
 
-    @Override
-    public void decodeLevel(PacketSerializer serializer) {
-        // Shadow clone packet holds no level
-    }
-
-    @Override
-    public void encodeLevel(PacketSerializer serializer) {
-        // Shadow clone packet holds no level
-    }
 
     @Override
     public void decodeEnd(PacketSerializer serializer) {
         ownerId = serializer.readShortLE();
     }
 
-
     @Override
     public void encodeEnd(PacketSerializer serializer) {
         serializer.writeShortLE(ownerId);
+    }
+
+    @Override
+    public int packetId() {
+        return 0x02;
     }
 }

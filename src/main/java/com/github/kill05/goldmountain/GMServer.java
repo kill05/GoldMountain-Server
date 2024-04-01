@@ -3,8 +3,10 @@ package com.github.kill05.goldmountain;
 import com.github.kill05.goldmountain.commands.CommandHandler;
 import com.github.kill05.goldmountain.dimension.DimensionController;
 import com.github.kill05.goldmountain.dimension.entity.PlayerCostume;
-import com.github.kill05.goldmountain.protocol.PlayerController;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutPlayerUpdate;
+import com.github.kill05.goldmountain.dimension.entity.player.FakePlayer;
+import com.github.kill05.goldmountain.dimension.entity.player.PlayerEntity;
+import com.github.kill05.goldmountain.protocol.ConnectionController;
+import com.github.kill05.goldmountain.protocol.packets.io.PlayerUpdatePacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -15,7 +17,7 @@ public class GMServer {
     public static final Logger logger = LogManager.getLogger(GMServer.class);
 
     private Thread serverThread;
-    private PlayerController playerController;
+    private ConnectionController connectionController;
     private DimensionController dimensionController;
     private CommandHandler commandHandler;
     private long currentTick;
@@ -32,7 +34,7 @@ public class GMServer {
 
         this.serverThread = new Thread(null, () -> {
             try {
-                this.playerController = new PlayerController(this);
+                this.connectionController = new ConnectionController(this);
                 this.dimensionController = new DimensionController();
                 this.commandHandler = new CommandHandler(this);
             } catch (Exception e) {
@@ -78,35 +80,27 @@ public class GMServer {
 
     private void tick() {
         //commandHandler.executeCommand("/test2 0000 4368b73f");
-        playerController.tick();
+        connectionController.tick();
         dimensionController.tick();
         commandHandler.processInput();
     }
 
 
-    public void sendTestPlayer(short id, Vector2f loc) {
-        sendTestPlayer(id, loc, loc, loc, loc);
+    public void sendFakePlayer(int id, short speed, PlayerCostume costume, Vector2f loc) {
+        sendFakePlayer(id, speed, costume, loc, loc, loc, loc);
     }
 
-    public void sendTestPlayer(short id, Vector2f loc1, Vector2f loc2, Vector2f loc3, Vector2f loc4) {
-        PacketInOutPlayerUpdate packet = new PacketInOutPlayerUpdate();
+    public void sendFakePlayer(int id, short speed, PlayerCostume costume, Vector2f loc1, Vector2f loc2, Vector2f loc3, Vector2f loc4) {
+        PlayerEntity fakePlayer = new FakePlayer(this, id);
+        fakePlayer.setDisplayCostume(costume);
+        fakePlayer.setSpeed(speed);
+        fakePlayer.getCheckpoints()[0] = loc1;
+        fakePlayer.getCheckpoints()[1] = loc2;
+        fakePlayer.getCheckpoints()[2] = loc3;
+        fakePlayer.getCheckpoints()[3] = loc4;
 
-        packet.setEntityId(id);
-        packet.setTotalLevel(0x0000_0000);
-
-        packet.setCostume(PlayerCostume.DEFAULT);
-        packet.setUnknown_2((byte) 0x00);
-        packet.setUnknown_0(0xffff_ffff);
-        packet.setTargetTileId(0xffff_ffff);
-
-        packet.setSpeed((short) 0x0040);
-        packet.setUnknown_3((short) 0x4300);
-
-        packet.setCheckpoints(new Vector2f[]{
-                loc1, loc2, loc3, loc4
-        });
-
-        playerController.broadcastPacket(packet);
+        PlayerUpdatePacket packet = new PlayerUpdatePacket(fakePlayer);
+        connectionController.broadcastPacket(packet);
     }
 
 
@@ -114,7 +108,7 @@ public class GMServer {
         logger.info("Closing server...");
 
         try {
-            playerController.shutdown();
+            connectionController.shutdown();
         } catch (InterruptedException e) {
             logger.warn("Failed to gracefully shutdown server.", e);
         }
@@ -123,12 +117,8 @@ public class GMServer {
     }
 
 
-    public Thread getServerThread() {
-        return serverThread;
-    }
-
-    public PlayerController getPlayerController() {
-        return playerController;
+    public ConnectionController getPlayerController() {
+        return connectionController;
     }
 
     public DimensionController getDimensionController() {

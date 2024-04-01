@@ -2,7 +2,7 @@ package com.github.kill05.goldmountain.dimension.entity;
 
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.protocol.PlayerConnection;
-import com.github.kill05.goldmountain.protocol.packets.io.PacketInOutHumanEntityUpdate;
+import com.github.kill05.goldmountain.protocol.packets.io.HumanUpdatePacket;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class HumanEntity extends Entity {
@@ -18,11 +18,11 @@ public abstract class HumanEntity extends Entity {
     }
 
 
-    public abstract short getId();
+    public abstract int getId();
 
     public abstract PlayerConnection getConnection();
 
-    public abstract void update(PacketInOutHumanEntityUpdate packet);
+    public abstract void update(HumanUpdatePacket packet);
 
 
     public PlayerCostume getCostume() {

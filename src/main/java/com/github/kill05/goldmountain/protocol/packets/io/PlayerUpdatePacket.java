@@ -1,20 +1,21 @@
 package com.github.kill05.goldmountain.protocol.packets.io;
 
-import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
+import com.github.kill05.goldmountain.dimension.entity.player.PlayerEntity;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
 
 import java.util.Arrays;
 
-public class PacketInOutPlayerUpdate extends PacketInOutHumanEntityUpdate {
+public class PlayerUpdatePacket extends HumanUpdatePacket {
 
     private int totalLevel;
 
-    public PacketInOutPlayerUpdate() {
-    }
-
-    public PacketInOutPlayerUpdate(ServerPlayer player) {
+    public PlayerUpdatePacket(PlayerEntity player) {
         super(player);
         this.totalLevel = player.getTotalLevel();
+    }
+
+    public PlayerUpdatePacket(PacketSerializer serializer) {
+        super(serializer);
     }
 
 
@@ -40,13 +41,14 @@ public class PacketInOutPlayerUpdate extends PacketInOutHumanEntityUpdate {
         serializer.writeShort(0xe803);
     }
 
-
-    public int getTotalLevel() {
-        return totalLevel;
+    @Override
+    public int packetId() {
+        return 0x01;
     }
 
-    public void setTotalLevel(int totalLevel) {
-        this.totalLevel = totalLevel;
+
+    public int totalLevel() {
+        return totalLevel;
     }
 
 

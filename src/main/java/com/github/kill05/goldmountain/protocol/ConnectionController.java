@@ -2,10 +2,10 @@ package com.github.kill05.goldmountain.protocol;
 
 import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.dimension.DimensionType;
-import com.github.kill05.goldmountain.dimension.entity.ServerPlayer;
+import com.github.kill05.goldmountain.dimension.entity.player.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
-import com.github.kill05.goldmountain.protocol.packets.out.PacketOutAssignPlayerId;
+import com.github.kill05.goldmountain.protocol.packets.out.AssignIdPacket;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketDecoder;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketEncoder;
 import com.github.kill05.goldmountain.protocol.pipeline.PacketHandler;
@@ -13,6 +13,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -22,23 +23,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 
-public class PlayerController {
+public class ConnectionController {
 
     public static final int PORT = 5575;
     public static final short MAGIC_BYTES = 0x1764;
 
     private final GMServer server;
     private final PacketRegistry packetRegistry;
-    private final Channel serverChannel;
     private final ConcurrentMap<Channel, ServerPlayer> players;
 
+    private final Channel serverChannel;
     private final EventLoopGroup bossGroup;
     private final EventLoopGroup workerGroup;
 
-    public PlayerController(GMServer server) {
+    public ConnectionController(GMServer server) {
         this.server = server;
+        this.packetRegistry = new PacketRegistry();
         this.players = new ConcurrentHashMap<>();
-        this.packetRegistry = PacketRegistry.instance();
 
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
@@ -48,13 +49,13 @@ public class PlayerController {
                 .childHandler(new ChannelInitializer<>() {
                     @Override
                     protected void initChannel(Channel channel) throws Exception {
-                        PlayerController controller = PlayerController.this;
+                        ConnectionController controller = ConnectionController.this;
                         ServerPlayer player = new ServerPlayer(controller, (short) getAvailableId(), channel);
                         PlayerConnection connection = player.getConnection();
 
                         channel.pipeline()
                                 .addLast("packet_decoder", new PacketDecoder(controller))
-                                .addLast("packet_encoder", new PacketEncoder(controller))
+                                .addLast("packet_encoder", new PacketEncoder())
                                 .addLast("packet_handler", new PacketHandler(connection))
                                 .addLast("channel_listener", new ChannelListener());
 
@@ -112,11 +113,11 @@ public class PlayerController {
 
     private void handleConnect(Channel channel) {
         ServerPlayer player = getPlayer(channel);
-        player.getConnection().sendPacket(new PacketOutAssignPlayerId(player.getId()));
+        player.getConnection().sendPacket(new AssignIdPacket(player.getId()));
         player.setDimension(DimensionType.SPAWN);
 
         SocketAddress address = channel.remoteAddress();
-        GMServer.logger.info(String.format("Player (id: %s, address: %s) connected.", player.getId(), address));
+        GMServer.logger.info(String.format("Player (tileId: %s, address: %s) connected.", player.getId(), address));
     }
 
     private void handleDisconnect(Channel channel) {
@@ -124,7 +125,7 @@ public class PlayerController {
         players.remove(channel);
 
         SocketAddress address = channel.remoteAddress();
-        GMServer.logger.info(String.format("Player (id: %s, address: %s) disconnected.", player.getId(), address));
+        GMServer.logger.info(String.format("Player (tileId: %s, address: %s) disconnected.", player.getId(), address));
     }
 
     private int getAvailableId() throws IOException {
@@ -142,20 +143,15 @@ public class PlayerController {
         }
     }
 
-
-    public PacketRegistry getPacketRegistry() {
-        return packetRegistry;
-    }
-
-    public Channel getServerChannel() {
+    public @NotNull Channel getServerChannel() {
         return serverChannel;
     }
 
-    public Collection<ServerPlayer> getPlayers() {
+    public @NotNull Collection<ServerPlayer> getPlayers() {
         return players.values();
     }
 
-    public ServerPlayer getPlayer(Channel channel) {
+    public @NotNull ServerPlayer getPlayer(Channel channel) {
         return players.get(channel);
     }
 
@@ -167,9 +163,11 @@ public class PlayerController {
         return null;
     }
 
+    public PacketRegistry getPacketRegistry() {
+        return packetRegistry;
+    }
 
     public GMServer getServer() {
         return server;
     }
-
 }

@@ -4,8 +4,8 @@ import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.commands.Command;
 import com.github.kill05.goldmountain.commands.senders.CommandSender;
 import com.github.kill05.goldmountain.dimension.DimensionType;
-import com.github.kill05.goldmountain.protocol.PlayerController;
-import com.github.kill05.goldmountain.protocol.packets.out.PacketOutUpdateDimension;
+import com.github.kill05.goldmountain.protocol.ConnectionController;
+import com.github.kill05.goldmountain.protocol.packets.out.UpdateDimensionPacket;
 import org.apache.commons.lang3.EnumUtils;
 
 public class TeleportCommand extends Command {
@@ -41,8 +41,8 @@ public class TeleportCommand extends Command {
             return;
         }
 
-        PlayerController connection = server.getPlayerController();
-        connection.broadcastPacket(new PacketOutUpdateDimension(id.byteValue()));
+        ConnectionController connection = server.getPlayerController();
+        connection.broadcastPacket(new UpdateDimensionPacket(id.byteValue()));
         //connection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0080 0061 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
         //connection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0080 0061 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
 

@@ -1,9 +1,9 @@
 package com.github.kill05.goldmountain.protocol.pipeline;
 
 import com.github.kill05.goldmountain.GMServer;
+import com.github.kill05.goldmountain.protocol.ConnectionController;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
-import com.github.kill05.goldmountain.protocol.PlayerController;
-import com.github.kill05.goldmountain.protocol.packets.Packet;
+import com.github.kill05.goldmountain.protocol.packets.IOPacket;
 import com.github.kill05.goldmountain.protocol.packets.PacketRegistry;
 import com.github.kill05.goldmountain.protocol.packets.PacketUtils;
 import io.netty.buffer.ByteBuf;
@@ -16,17 +16,17 @@ import java.util.List;
 
 public class PacketDecoder extends ByteToMessageDecoder {
 
-    private final PlayerController playerController;
+    private final PacketRegistry packetRegistry;
 
-    public PacketDecoder(PlayerController playerController) {
-        this.playerController = playerController;
+    public PacketDecoder(ConnectionController connectionController) {
+        this.packetRegistry = connectionController.getPacketRegistry();
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
         if(byteBuf.readableBytes() < 7) return;
 
-        if(byteBuf.getShort(byteBuf.readerIndex()) != PlayerController.MAGIC_BYTES) {
+        if(byteBuf.getShort(byteBuf.readerIndex()) != ConnectionController.MAGIC_BYTES) {
             GMServer.logger.warn(String.format("Found illegal data in the cumulative buffer (%s) ! Clearing...", ByteBufUtil.hexDump(byteBuf)));
             byteBuf.clear();
             return;
@@ -37,29 +37,19 @@ public class PacketDecoder extends ByteToMessageDecoder {
         if(byteBuf.readableBytes() < length) return;
 
         try {
-            Packet packet = playerController.getPacketRegistry().createInboundPacket(id);
-            if (packet != null) {
-                PacketSerializer serializer = new PacketSerializer(byteBuf.slice(7, length - 7));
-                packet.decode(serializer);
-                out.add(packet);
+            PacketSerializer serializer = new PacketSerializer(byteBuf.slice(7, length - 7));
+            IOPacket packet = packetRegistry.createInboundPacket(id, serializer);
+            out.add(packet);
 
-                while (serializer.isReadable()) {
-                    Packet subPacket = PacketRegistry.instance().createInboundPacket(serializer.readByte());
-
-                    if (subPacket == null) {
-                        serializer.readerIndex(serializer.readerIndex() - 1);
-                        GMServer.logger.warn("Found extra unprocessed data while decoding a packet. Clearing buffer...");
-                        GMServer.logger.warn("Buffered data: " + ByteBufUtil.hexDump(byteBuf));
-                        GMServer.logger.warn("Extra data: " + ByteBufUtil.hexDump(serializer));
-                        byteBuf.clear();
-                        return;
-                    }
-
-                    subPacket.decode(serializer);
+            while (serializer.isReadable()) {
+                try {
+                    IOPacket subPacket = packetRegistry.createInboundPacket(serializer.readByte(), serializer);
                     out.add(subPacket);
+                } catch (IOException e) {
+                    serializer.readerIndex(serializer.readerIndex() - 1);
+                    throw new IOException("Incomplete data stream consumption. Extra data: " + ByteBufUtil.hexDump(serializer));
                 }
             }
-
         } finally {
             byteBuf.readerIndex(length);
             byteBuf.discardReadBytes();
