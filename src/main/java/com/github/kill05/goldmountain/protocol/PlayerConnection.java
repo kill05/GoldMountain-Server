@@ -1,13 +1,13 @@
 package com.github.kill05.goldmountain.protocol;
 
 import com.github.kill05.goldmountain.GMServer;
+import com.github.kill05.goldmountain.dimension.ServerDimension;
+import com.github.kill05.goldmountain.dimension.entity.player.PlayerEntity;
 import com.github.kill05.goldmountain.dimension.entity.player.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import com.github.kill05.goldmountain.protocol.packets.io.CloneUpdatePacket;
 import com.github.kill05.goldmountain.protocol.packets.io.PlayerUpdatePacket;
 import io.netty.channel.Channel;
-
-import java.util.Collection;
 
 public class PlayerConnection {
 
@@ -25,24 +25,19 @@ public class PlayerConnection {
 
 
     public void tick() {
-        if(player.getLocation() != null) {
-            PlayerUpdatePacket update = new PlayerUpdatePacket(player);
-            sendPacketToOthers(update);
-        }
+        ServerDimension dimension = player.getDimension();
+        if(dimension == null) return;
+
+        dimension.forEachEntity(entity -> {
+            if(!(entity instanceof PlayerEntity other)) return;
+            sendPacket(new PlayerUpdatePacket(other));
+        });
     }
 
 
     public void sendPacket(Packet packet) {
         if(!isActive()) return;
         channel.writeAndFlush(packet);
-    }
-
-    public void sendPacketToOthers(Packet packet) {
-        Collection<ServerPlayer> players = player.getServer().getPlayerController().getPlayers();
-        for (ServerPlayer serverPlayer : players) {
-            if(serverPlayer == player) continue;
-            serverPlayer.getConnection().sendPacket(packet);
-        }
     }
 
 

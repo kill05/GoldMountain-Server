@@ -5,7 +5,9 @@ import com.github.kill05.goldmountain.dimension.group.DimensionGroup;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.function.Consumer;
 
 public class ServerDimension {
 
@@ -25,7 +27,7 @@ public class ServerDimension {
         DimensionController.LOGGER.info(String.format("Created dimension with type %s and floor %s.", group.getType(), floor));
     }
 
-
+    //todo: don't change entity dimension under tick, that causes a ConcurrentModificationException
     public void tick() {
         for (Entity entity : entities) {
             entity.tick();
@@ -39,6 +41,16 @@ public class ServerDimension {
 
     public void removeEntityUnsafe(Entity entity) {
         entities.remove(entity);
+    }
+
+    public Collection<Entity> getEntities() {
+        return Collections.unmodifiableCollection(entities);
+    }
+
+    public void forEachEntity(Consumer<Entity> consumer) {
+        for (Entity entity : entities) {
+            consumer.accept(entity);
+        }
     }
 
 
