@@ -23,16 +23,18 @@ public class ServerPlayer extends PlayerEntity {
     public void tick() {
         super.tick();
         connection.tick();
-        tickPosition();
+        checkLoadingZone();
     }
 
-    // Check if player is on a loading zone
-    private void tickPosition() {
-        if(getLocation() == null || dimensionType != DimensionType.SPAWN) return;
-        for (DimensionType type : DimensionType.values()) {
-            if(!type.isOnLoadingZone(this)) continue;
-            setDimension(type);
-            return;
+    private void checkLoadingZone() {
+        if(getLocation() == null) return;
+
+        if(dimensionType == DimensionType.SPAWN) {
+            for (DimensionType type : DimensionType.values()) {
+                if (!type.isOnLoadingZone(this)) continue;
+                setDimension(type);
+                return;
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.github.kill05.goldmountain.dimension;
 import com.github.kill05.goldmountain.dimension.entity.Entity;
 import com.github.kill05.goldmountain.dimension.group.DimensionGroup;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -27,21 +28,18 @@ public class ServerDimension {
         DimensionController.LOGGER.info(String.format("Created dimension with type %s and floor %s.", group.getType(), floor));
     }
 
-    //todo: don't change entity dimension under tick, that causes a ConcurrentModificationException
+    //todo: fix a bug where if a player disconnects, the entity is still there
     public void tick() {
         for (Entity entity : entities) {
             entity.tick();
         }
     }
 
-
-    public void addEntityUnsafe(Entity entity) {
+    public void moveEntityUnsafe(Entity entity, @Nullable ServerDimension dimension) {
+        if(dimension != null) dimension.entities.remove(entity);
         entities.add(entity);
     }
 
-    public void removeEntityUnsafe(Entity entity) {
-        entities.remove(entity);
-    }
 
     public Collection<Entity> getEntities() {
         return Collections.unmodifiableCollection(entities);

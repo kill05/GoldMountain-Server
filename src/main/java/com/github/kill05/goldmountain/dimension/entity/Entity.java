@@ -12,6 +12,7 @@ public abstract class Entity {
     protected final GMServer server;
     protected DimensionType dimensionType;
     protected int floor;
+
     protected final Vector2f[] checkpoints;
     protected short speed;
 
@@ -25,24 +26,33 @@ public abstract class Entity {
 
     }
 
-
     public @Nullable ServerDimension getDimension() {
         if(dimensionType == null) return null;
+        return server.getDimensionController().getGeneratedDimension(dimensionType, floor);
+    }
+
+    private @NotNull ServerDimension getOrCreateDimension() {
+        if(dimensionType == null) throw new IllegalStateException("Dimension Type is null!");
         return server.getDimensionController().getOrCreateDimension(dimensionType, floor);
     }
 
     public void setDimension(@NotNull DimensionType type, int floor) {
-        if(!type.isValidFloor(floor)) {
+        setDimension(type, floor, false);
+    }
+
+    public void setDimension(@NotNull DimensionType type, int floor, boolean force) {
+        if(!force && !type.isValidFloor(floor)) {
             throw new IllegalArgumentException(String.format("Floor %s is not a valid floor for dimension %s.", floor, type));
         }
 
-        // getDimension returns two different dimensions because the type and floor fields are different between each call
-        ServerDimension dimension = getDimension();
-        if(dimension != null) dimension.removeEntityUnsafe(this);
-
+        // Called before changing type and floor fields to get the correct floor
+        ServerDimension oldDimension = getDimension();
         this.dimensionType = type;
         this.floor = floor;
-        getDimension().addEntityUnsafe(this);
+
+        // Generate new dimension if it doesn't exist
+        getOrCreateDimension();
+        server.getDimensionController().markToMove(this, oldDimension);
     }
 
     public void setDimension(DimensionType type) {
@@ -52,7 +62,6 @@ public abstract class Entity {
     public void descend() {
         setDimension(this.dimensionType, this.floor + 1);
     }
-
 
     public Vector2f getLocation() {
         return checkpoints[0];

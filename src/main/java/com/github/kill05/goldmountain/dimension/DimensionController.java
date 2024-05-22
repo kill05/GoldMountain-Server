@@ -1,5 +1,6 @@
 package com.github.kill05.goldmountain.dimension;
 
+import com.github.kill05.goldmountain.dimension.entity.Entity;
 import com.github.kill05.goldmountain.dimension.group.DimensionGroup;
 import com.github.kill05.goldmountain.dimension.group.MultiDimensionGroup;
 import com.github.kill05.goldmountain.dimension.group.SingleDimensionGroup;
@@ -15,9 +16,12 @@ public class DimensionController {
 
     public static final Logger LOGGER = LogManager.getLogger(DimensionController.class);
     private final Map<DimensionType, DimensionGroup> dimensionMap;
+    private final Map<Entity, ServerDimension> entityToMoveMap; // ServerDimension is the previous dimension of the entity (can be null)
 
     public DimensionController() {
         this.dimensionMap = new HashMap<>();
+        this.entityToMoveMap = new HashMap<>();
+
         getOrCreateDimension(DimensionType.SPAWN, 0);
     }
 
@@ -26,6 +30,22 @@ public class DimensionController {
         for (DimensionGroup value : dimensionMap.values()) {
             value.tick();
         }
+
+        // Process entities that need to be moved to another dimension
+        for (Map.Entry<Entity, ServerDimension> entry : entityToMoveMap.entrySet()) {
+            Entity entity = entry.getKey();
+            ServerDimension dimension = entity.getDimension();
+
+            if(dimension == null) throw new IllegalStateException("Entity with no dimension was marked to be moved.");
+            dimension.moveEntityUnsafe(entity, entry.getValue());
+        }
+
+
+    }
+
+
+    public void markToMove(@NotNull Entity entity, @Nullable ServerDimension oldDimension) {
+        entityToMoveMap.put(entity, oldDimension);
     }
 
 
@@ -35,7 +55,7 @@ public class DimensionController {
 
     public @NotNull ServerDimension getGeneratedDimension(@NotNull DimensionType type, int floor) {
         ServerDimension dimension = getDimension(type, floor);
-        if(dimension == null)
+        if (dimension == null)
             throw new IllegalStateException(String.format("No generated dimension of type %s and floor %s.", type, floor));
 
         return dimension;
