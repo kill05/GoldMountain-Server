@@ -22,18 +22,14 @@ public abstract class Entity {
     }
 
 
+    public static boolean debug = false;
     public void tick() {
-
+        if(debug) System.out.printf("Ticked on tick %s!%n", server.getCurrentTick());
     }
 
     public @Nullable ServerDimension getDimension() {
         if(dimensionType == null) return null;
         return server.getDimensionController().getGeneratedDimension(dimensionType, floor);
-    }
-
-    private @NotNull ServerDimension getOrCreateDimension() {
-        if(dimensionType == null) throw new IllegalStateException("Dimension Type is null!");
-        return server.getDimensionController().getOrCreateDimension(dimensionType, floor);
     }
 
     public void setDimension(@NotNull DimensionType type, int floor) {
@@ -45,19 +41,21 @@ public abstract class Entity {
             throw new IllegalArgumentException(String.format("Floor %s is not a valid floor for dimension %s.", floor, type));
         }
 
-        // Called before changing type and floor fields to get the correct floor
-        ServerDimension oldDimension = getDimension();
-        this.dimensionType = type;
-        this.floor = floor;
+        if(type == this.dimensionType && floor == this.floor) return;
 
-        // Generate new dimension if it doesn't exist
-        getOrCreateDimension();
-        server.getDimensionController().markToMove(this, oldDimension);
+        // Mark entity to be moved at the end of the tick
+        server.getDimensionController().markToMove(this, type, floor);
     }
 
     public void setDimension(DimensionType type) {
         setDimension(type, 0);
     }
+
+    public void setDimensionUnsafe(DimensionType type, int floor) {
+        this.dimensionType = type;
+        this.floor = floor;
+    }
+
 
     public void descend() {
         setDimension(this.dimensionType, this.floor + 1);
@@ -92,6 +90,13 @@ public abstract class Entity {
         this.speed = speed;
     }
 
+    public DimensionType getDimensionType() {
+        return dimensionType;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
 
     public GMServer getServer() {
         return server;

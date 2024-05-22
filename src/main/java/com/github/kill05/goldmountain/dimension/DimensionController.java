@@ -16,7 +16,8 @@ public class DimensionController {
 
     public static final Logger LOGGER = LogManager.getLogger(DimensionController.class);
     private final Map<DimensionType, DimensionGroup> dimensionMap;
-    private final Map<Entity, ServerDimension> entityToMoveMap; // ServerDimension is the previous dimension of the entity (can be null)
+    private final Map<Entity, DimensionInfo> entityToMoveMap; // Value is the future dimension of the entity
+    private boolean tickedDimensions;
 
     public DimensionController() {
         this.dimensionMap = new HashMap<>();
@@ -25,27 +26,41 @@ public class DimensionController {
         getOrCreateDimension(DimensionType.SPAWN, 0);
     }
 
+    public void preTick() {
+        this.tickedDimensions = false;
+    }
 
     public void tick() {
         for (DimensionGroup value : dimensionMap.values()) {
             value.tick();
         }
 
-        // Process entities that need to be moved to another dimension
-        for (Map.Entry<Entity, ServerDimension> entry : entityToMoveMap.entrySet()) {
-            Entity entity = entry.getKey();
-            ServerDimension dimension = entity.getDimension();
+        this.tickedDimensions = true;
 
-            if(dimension == null) throw new IllegalStateException("Entity with no dimension was marked to be moved.");
-            dimension.moveEntityUnsafe(entity, entry.getValue());
+        // Process entities that need to be moved to another dimension
+        for (Map.Entry<Entity, DimensionInfo> entry : entityToMoveMap.entrySet()) {
+            Entity entity = entry.getKey();
+            DimensionInfo info = entry.getValue();
+            moveEntity(entity, info.type(), info.floor());
         }
 
-
+        entityToMoveMap.clear();
     }
 
 
-    public void markToMove(@NotNull Entity entity, @Nullable ServerDimension oldDimension) {
-        entityToMoveMap.put(entity, oldDimension);
+    public void markToMove(@NotNull Entity entity, @NotNull DimensionType type, int floor) {
+        if(tickedDimensions) {
+            moveEntity(entity, type, floor);
+            return;
+        }
+
+        entityToMoveMap.put(entity, new DimensionInfo(type, floor));
+    }
+
+    private void moveEntity(@NotNull Entity entity, @NotNull DimensionType type, int floor) {
+        System.out.println(String.format("moving entity to %s, %s", type, floor));
+        ServerDimension newDimension = getOrCreateDimension(type, floor);
+        newDimension.moveEntityUnsafe(entity);
     }
 
 

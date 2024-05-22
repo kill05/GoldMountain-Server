@@ -79,6 +79,8 @@ public class GMServer {
     }
 
     private void tick() {
+        dimensionController.preTick();
+
         //commandHandler.executeCommand("/test2 0000 4368b73f");
         connectionController.tick();
         dimensionController.tick();

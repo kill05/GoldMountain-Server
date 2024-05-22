@@ -3,7 +3,6 @@ package com.github.kill05.goldmountain.dimension;
 import com.github.kill05.goldmountain.dimension.entity.Entity;
 import com.github.kill05.goldmountain.dimension.group.DimensionGroup;
 import org.apache.commons.lang3.Validate;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,8 +34,11 @@ public class ServerDimension {
         }
     }
 
-    public void moveEntityUnsafe(Entity entity, @Nullable ServerDimension dimension) {
-        if(dimension != null) dimension.entities.remove(entity);
+    public void moveEntityUnsafe(Entity entity) {
+        ServerDimension oldDimension = entity.getDimension();
+        if(oldDimension != null) oldDimension.entities.remove(entity);
+
+        entity.setDimensionUnsafe(getType(), getFloor());
         entities.add(entity);
     }
 

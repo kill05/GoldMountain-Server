@@ -4,8 +4,8 @@ import com.github.kill05.goldmountain.GMServer;
 import com.github.kill05.goldmountain.commands.Command;
 import com.github.kill05.goldmountain.commands.senders.CommandSender;
 import com.github.kill05.goldmountain.dimension.DimensionType;
-import com.github.kill05.goldmountain.protocol.ConnectionController;
-import com.github.kill05.goldmountain.protocol.packets.out.UpdateDimensionPacket;
+import com.github.kill05.goldmountain.dimension.entity.player.ServerPlayer;
+import com.github.kill05.goldmountain.protocol.enums.Identifiable;
 import org.apache.commons.lang3.EnumUtils;
 
 public class TeleportCommand extends Command {
@@ -19,34 +19,33 @@ public class TeleportCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args.length == 0) {
+        if (args.length == 0) {
             sender.sendMessage("Usage: /teleport [dim NAME or ID]");
             return;
         }
 
-        Integer id = null;
         DimensionType type = EnumUtils.getEnumIgnoreCase(DimensionType.class, args[0]);
-        if(type != null && type.isValid()) {
-            id = type.getId();
-        } else {
+        if (type == null) {
             try {
-                id = Integer.decode(args[0].startsWith("0x") ? args[0] : "0x" + args[0]);
+                int id = Integer.decode(args[0].startsWith("0x") ? args[0] : "0x" + args[0]);
+                type = Identifiable.fromId(DimensionType.class, id);
             } catch (NumberFormatException ignored) {
             }
 
         }
 
-        if(id == null) {
+        if (type == null || !type.isValid()) {
             sender.sendMessage("Invalid dimension.");
             return;
         }
 
-        ConnectionController connection = server.getPlayerController();
-        connection.broadcastPacket(new UpdateDimensionPacket(id.byteValue()));
+        for (ServerPlayer player : server.getPlayerController().getPlayers()) {
+            player.setDimension(type);
+        }
         //connection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0080 0061 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
         //connection.sendPacket(new TestPacket("05 a007 c000 5f00 fb00 0000 0580 0080 0061 0000 00000006 8006 a003 0400 0680 03a0 0604 00"));
 
-        sender.sendMessage(String.format("Teleported to dimension '%s'.", id));
+        sender.sendMessage(String.format("Teleported to '%s'.", type));
     }
 
 }

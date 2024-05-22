@@ -40,10 +40,10 @@ public class ServerPlayer extends PlayerEntity {
 
 
     @Override
-    public void setDimension(@NotNull DimensionType type, int floor) {
+    public void setDimensionUnsafe(@NotNull DimensionType type, int floor) {
         boolean syncFloor = this.dimensionType == type && floor - this.floor != 1;
 
-        super.setDimension(type, floor);
+        super.setDimensionUnsafe(type, floor);
         sendUpdateDimensionPacket(syncFloor);
 
         // Clear current location to avoid the player flashing for a bit on its old position

@@ -3,7 +3,7 @@ package com.github.kill05.goldmountain.protocol.packets.io;
 import com.github.kill05.goldmountain.dimension.entity.HumanEntity;
 import com.github.kill05.goldmountain.dimension.entity.PlayerCostume;
 import com.github.kill05.goldmountain.protocol.PacketSerializer;
-import com.github.kill05.goldmountain.protocol.enums.IdentifiableEnumHelper;
+import com.github.kill05.goldmountain.protocol.enums.Identifiable;
 import com.github.kill05.goldmountain.protocol.packets.IOPacket;
 import org.joml.Vector2f;
 
@@ -46,7 +46,7 @@ public abstract class HumanUpdatePacket implements IOPacket {
         speed = serializer.readShortLE();
 
         unknown_0 = serializer.readInt();
-        costume = IdentifiableEnumHelper.fromId(PlayerCostume.class, serializer.readShortLE());
+        costume = Identifiable.fromId(PlayerCostume.class, serializer.readShortLE());
         targetTileId = serializer.readInt();
 
         decodeEnd(serializer);

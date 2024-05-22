@@ -24,6 +24,7 @@ public class CommandHandler{
         registerCommand(new PlayerInfoCommand(server));
         registerCommand(new TeleportCommand(server));
         registerCommand(new DecodeLocationCommand());
+        registerCommand(new TestCommand());
     }
 
 
