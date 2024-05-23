@@ -111,7 +111,7 @@ public class ConnectionController {
     }
 
 
-    private void handleConnect(Channel channel) {
+    private void handleConnect(@NotNull Channel channel) {
         ServerPlayer player = getPlayer(channel);
         player.getConnection().sendPacket(new AssignIdPacket(player.getId()));
         player.setDimension(DimensionType.SPAWN);
@@ -120,8 +120,10 @@ public class ConnectionController {
         GMServer.logger.info(String.format("Player (tileId: %s, address: %s) connected.", player.getId(), address));
     }
 
-    private void handleDisconnect(Channel channel) {
+    private void handleDisconnect(@NotNull Channel channel) {
         ServerPlayer player = getPlayer(channel);
+        //todo: submit task to main thread
+        player.remove();
         players.remove(channel);
 
         SocketAddress address = channel.remoteAddress();
@@ -129,12 +131,13 @@ public class ConnectionController {
     }
 
     private int getAvailableId() throws IOException {
-        short id = 0;
+        throw new IOException("test");
+        /*short id = 0;
         while (true) {
             if(getPlayer(id) == null) return id;
             if(id == Short.MAX_VALUE) throw new IOException("No more available ids.");
             id++;
-        }
+        }*/
     }
 
     public void broadcastPacket(Packet packet) {
@@ -151,7 +154,7 @@ public class ConnectionController {
         return players.values();
     }
 
-    public @NotNull ServerPlayer getPlayer(Channel channel) {
+    public @NotNull ServerPlayer getPlayer(@NotNull Channel channel) {
         return players.get(channel);
     }
 

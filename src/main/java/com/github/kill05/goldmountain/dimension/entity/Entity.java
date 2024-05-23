@@ -47,13 +47,17 @@ public abstract class Entity {
         server.getDimensionController().markToMove(this, type, floor);
     }
 
-    public void setDimension(DimensionType type) {
+    public void setDimension(@NotNull DimensionType type) {
         setDimension(type, 0);
     }
 
-    public void setDimensionUnsafe(DimensionType type, int floor) {
+    public void setDimensionUnsafe(@Nullable DimensionType type, int floor) {
         this.dimensionType = type;
         this.floor = floor;
+    }
+
+    public void remove() {
+        server.getDimensionController().markToMove(this, null, 0);
     }
 
 

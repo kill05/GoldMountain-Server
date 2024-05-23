@@ -1,13 +1,13 @@
 package com.github.kill05.goldmountain.dimension.entity.player;
 
 import com.github.kill05.goldmountain.dimension.DimensionType;
-import com.github.kill05.goldmountain.protocol.PlayerConnection;
 import com.github.kill05.goldmountain.protocol.ConnectionController;
+import com.github.kill05.goldmountain.protocol.PlayerConnection;
 import com.github.kill05.goldmountain.protocol.packets.io.HumanUpdatePacket;
 import com.github.kill05.goldmountain.protocol.packets.io.PlayerUpdatePacket;
 import com.github.kill05.goldmountain.protocol.packets.out.UpdateDimensionPacket;
 import io.netty.channel.Channel;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ServerPlayer extends PlayerEntity {
 
@@ -40,7 +40,7 @@ public class ServerPlayer extends PlayerEntity {
 
 
     @Override
-    public void setDimensionUnsafe(@NotNull DimensionType type, int floor) {
+    public void setDimensionUnsafe(@Nullable DimensionType type, int floor) {
         boolean syncFloor = this.dimensionType == type && floor - this.floor != 1;
 
         super.setDimensionUnsafe(type, floor);
@@ -68,6 +68,7 @@ public class ServerPlayer extends PlayerEntity {
     }
 
     public void sendUpdateDimensionPacket(boolean syncFloor) {
+        if(dimensionType == null) return;
         UpdateDimensionPacket packet = new UpdateDimensionPacket(dimensionType);
 
         if(syncFloor && dimensionType.hasMultipleFloors()) {

@@ -24,7 +24,7 @@ public class ServerDimension {
         //this.tileIDMap = new HashMap<>();
         this.entities = new HashSet<>();
 
-        DimensionController.LOGGER.info(String.format("Created dimension with type %s and floor %s.", group.getType(), floor));
+        DimensionController.LOGGER.debug(String.format("Created dimension with type %s and floor %s.", group.getType(), floor));
     }
 
     //todo: fix a bug where if a player disconnects, the entity is still there
@@ -42,9 +42,18 @@ public class ServerDimension {
         entities.add(entity);
     }
 
+    public void removeEntityUnsafe(Entity entity) {
+        entity.setDimensionUnsafe(null, 0);
+        entities.remove(entity);
+    }
+
 
     public Collection<Entity> getEntities() {
         return Collections.unmodifiableCollection(entities);
+    }
+
+    public int getEntityCount() {
+        return entities.size();
     }
 
     public void forEachEntity(Consumer<Entity> consumer) {

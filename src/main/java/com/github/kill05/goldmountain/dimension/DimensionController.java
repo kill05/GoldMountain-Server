@@ -48,7 +48,7 @@ public class DimensionController {
     }
 
 
-    public void markToMove(@NotNull Entity entity, @NotNull DimensionType type, int floor) {
+    public void markToMove(@NotNull Entity entity, @Nullable DimensionType type, int floor) {
         if(tickedDimensions) {
             moveEntity(entity, type, floor);
             return;
@@ -57,8 +57,20 @@ public class DimensionController {
         entityToMoveMap.put(entity, new DimensionInfo(type, floor));
     }
 
-    private void moveEntity(@NotNull Entity entity, @NotNull DimensionType type, int floor) {
-        System.out.println(String.format("moving entity to %s, %s", type, floor));
+    private void moveEntity(@NotNull Entity entity, @Nullable DimensionType type, int floor) {
+        if(type == null) {
+            ServerDimension dimension = entity.getDimension();
+            if(dimension == null) {
+                LOGGER.warn("Tried to remove an entity with no dimension.");
+                return;
+            }
+
+            LOGGER.debug(String.format("Removing entity from dimension %s, floor %s", dimension.getType(), dimension.getFloor()));
+            dimension.removeEntityUnsafe(entity);
+            return;
+        }
+
+        LOGGER.debug(String.format("Moving entity to dimension %s, floor %s", type, floor));
         ServerDimension newDimension = getOrCreateDimension(type, floor);
         newDimension.moveEntityUnsafe(entity);
     }
