@@ -131,13 +131,12 @@ public class ConnectionController {
     }
 
     private int getAvailableId() throws IOException {
-        throw new IOException("test");
-        /*short id = 0;
+        short id = 0;
         while (true) {
             if(getPlayer(id) == null) return id;
             if(id == Short.MAX_VALUE) throw new IOException("No more available ids.");
             id++;
-        }*/
+        }
     }
 
     public void broadcastPacket(Packet packet) {
