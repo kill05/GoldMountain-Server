@@ -6,7 +6,7 @@ import com.github.kill05.goldmountain.protocol.enums.Identifiable;
 import com.github.kill05.goldmountain.protocol.packets.Packet;
 import org.jetbrains.annotations.NotNull;
 
-public record UpdateDimensionPacket(short dimensionId) implements Packet {
+public record UpdateDimensionPacket(int dimensionId) implements Packet {
 
     public UpdateDimensionPacket(@NotNull DimensionType dimensionType) {
         this((short) dimensionType.getId());

@@ -6,6 +6,7 @@ import com.github.kill05.goldmountain.commands.senders.CommandSender;
 import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.dimension.entity.player.ServerPlayer;
 import com.github.kill05.goldmountain.protocol.enums.Identifiable;
+import com.github.kill05.goldmountain.protocol.packets.out.UpdateDimensionPacket;
 import org.apache.commons.lang3.EnumUtils;
 
 public class TeleportCommand extends Command {
@@ -20,21 +21,32 @@ public class TeleportCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage("Usage: /teleport [dim NAME or ID]");
+            sender.sendMessage("Usage: /teleport [dim NAME or ID] [allow invalid (true/false)]");
             return;
         }
+
+        boolean allowInvalid = args.length > 1 && Boolean.parseBoolean(args[1]);
 
         DimensionType type = EnumUtils.getEnumIgnoreCase(DimensionType.class, args[0]);
         if (type == null) {
             try {
                 int id = Integer.decode(args[0].startsWith("0x") ? args[0] : "0x" + args[0]);
                 type = Identifiable.fromId(DimensionType.class, id);
+
+                // Send dimension packet without updating dimension
+                if (type == DimensionType.UNKNOWN && allowInvalid) {
+                    for (ServerPlayer player : server.getPlayerController().getPlayers()) {
+                        player.getConnection().sendPacket(new UpdateDimensionPacket(id));
+                    }
+
+                    return;
+                }
             } catch (NumberFormatException ignored) {
             }
-
         }
 
-        if (type == null || !type.isValid()) {
+
+        if (type == null || (!type.isValid() && !allowInvalid)) {
             sender.sendMessage("Invalid dimension.");
             return;
         }
