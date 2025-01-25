@@ -2,9 +2,12 @@ package com.github.kill05.goldmountain.dimension.group;
 
 import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.dimension.ServerDimension;
+import com.github.kill05.goldmountain.dimension.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MultiDimensionGroup extends DimensionGroup {
@@ -30,7 +33,7 @@ public class MultiDimensionGroup extends DimensionGroup {
 
     @Override
     public @NotNull ServerDimension createDimension(int floor) {
-        if(floorDimensionMap.containsKey(floor)) {
+        if (floorDimensionMap.containsKey(floor)) {
             throw new IllegalStateException(String.format("Multi Dimension group already has a dimension for floor %s.", floor));
         }
 
@@ -42,5 +45,28 @@ public class MultiDimensionGroup extends DimensionGroup {
     @Override
     public void deleteDimension(int floor) {
         floorDimensionMap.remove(floor);
+    }
+
+
+    @Override
+    public List<Entity> getEntities() {
+        List<Entity> entities = new ArrayList<>();
+
+        for (ServerDimension dimension : floorDimensionMap.values()) {
+            entities.addAll(dimension.getEntities());
+        }
+
+        return entities;
+    }
+
+    @Override
+    public int getEntityCount() {
+        int amount = 0;
+
+        for (ServerDimension dimension : floorDimensionMap.values()) {
+            amount += dimension.getEntityCount();
+        }
+
+        return amount;
     }
 }

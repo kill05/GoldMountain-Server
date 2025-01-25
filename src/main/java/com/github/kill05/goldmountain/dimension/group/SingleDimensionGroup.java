@@ -2,7 +2,11 @@ package com.github.kill05.goldmountain.dimension.group;
 
 import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.dimension.ServerDimension;
+import com.github.kill05.goldmountain.dimension.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SingleDimensionGroup extends DimensionGroup {
 
@@ -36,5 +40,15 @@ public class SingleDimensionGroup extends DimensionGroup {
     @Override
     public void deleteDimension(int floor) {
         this.dimension = null;
+    }
+
+    @Override
+    public List<Entity> getEntities() {
+        return new ArrayList<>(dimension.getEntities());
+    }
+
+    @Override
+    public int getEntityCount() {
+        return dimension.getEntityCount();
     }
 }
