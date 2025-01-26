@@ -1,12 +1,12 @@
 package com.github.kill05.goldmountain.server.commands.registered;
 
+import com.github.kill05.goldmountain.Identifiable;
+import com.github.kill05.goldmountain.connection.packets.out.UpdateDimensionPacket;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.GMServer;
 import com.github.kill05.goldmountain.server.commands.Command;
 import com.github.kill05.goldmountain.server.commands.senders.CommandSender;
-import com.github.kill05.goldmountain.server.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayer;
-import com.github.kill05.goldmountain.proxy.Identifiable;
-import com.github.kill05.goldmountain.connection.packets.out.UpdateDimensionPacket;
 import org.apache.commons.lang3.EnumUtils;
 
 public class TeleportCommand extends Command {

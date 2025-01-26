@@ -2,7 +2,7 @@ package com.github.kill05.goldmountain.server.connection;
 
 import com.github.kill05.goldmountain.server.GMServer;
 import com.github.kill05.goldmountain.server.dimension.ServerDimension;
-import com.github.kill05.goldmountain.server.entity.player.PlayerEntity;
+import com.github.kill05.goldmountain.server.entity.player.ServerPlayerEntity;
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayer;
 import com.github.kill05.goldmountain.connection.packets.Packet;
 import com.github.kill05.goldmountain.connection.packets.io.CloneUpdatePacket;
@@ -29,7 +29,7 @@ public class PlayerConnection {
         if(dimension == null) return;
 
         dimension.forEachEntity(entity -> {
-            if(!(entity instanceof PlayerEntity other)) return;
+            if(!(entity instanceof ServerPlayerEntity other)) return;
             sendPacket(new PlayerUpdatePacket(other));
         });
     }

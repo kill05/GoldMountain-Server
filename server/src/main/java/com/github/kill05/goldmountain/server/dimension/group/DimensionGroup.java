@@ -1,8 +1,8 @@
 package com.github.kill05.goldmountain.server.dimension.group;
 
-import com.github.kill05.goldmountain.server.dimension.DimensionType;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.dimension.ServerDimension;
-import com.github.kill05.goldmountain.server.entity.Entity;
+import com.github.kill05.goldmountain.server.entity.ServerEntity;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +31,7 @@ public abstract class DimensionGroup {
     /**
      * @return a list of entities present in the dimension(s) of the group, sorted by entity floor
      */
-    public abstract List<Entity> getEntities();
+    public abstract List<ServerEntity> getEntities();
 
     public abstract int getEntityCount();
 

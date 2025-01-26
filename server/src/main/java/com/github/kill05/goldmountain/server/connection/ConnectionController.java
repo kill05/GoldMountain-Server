@@ -2,7 +2,7 @@ package com.github.kill05.goldmountain.server.connection;
 
 import com.github.kill05.goldmountain.connection.ConnectionConstants;
 import com.github.kill05.goldmountain.server.GMServer;
-import com.github.kill05.goldmountain.server.dimension.DimensionType;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayer;
 import com.github.kill05.goldmountain.connection.packets.Packet;
 import com.github.kill05.goldmountain.connection.packets.PacketRegistry;
@@ -58,7 +58,7 @@ public class ConnectionController {
                         channel.pipeline()
                                 .addLast("packet_decoder", new PacketDecoder(packetRegistry))
                                 .addLast("packet_encoder", new PacketEncoder(packetRegistry))
-                                .addLast("packet_handler", new PacketHandler(connection))
+                                .addLast("packet_handler", new ServerPacketHandler(connection))
                                 .addLast("channel_listener", new ChannelListener());
 
                         players.put(channel, player);
@@ -116,7 +116,7 @@ public class ConnectionController {
 
     private void handleConnect(@NotNull Channel channel) {
         ServerPlayer player = getPlayer(channel);
-        player.getConnection().sendPacket(new AssignPlayerIdPacket(player.getId()));
+        player.getConnection().sendPacket(new AssignPlayerIdPacket(player));
         player.setDimension(DimensionType.SPAWN);
 
         SocketAddress address = channel.remoteAddress();

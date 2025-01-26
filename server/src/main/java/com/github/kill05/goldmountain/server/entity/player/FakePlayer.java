@@ -5,7 +5,7 @@ import com.github.kill05.goldmountain.server.connection.PlayerConnection;
 import com.github.kill05.goldmountain.connection.packets.io.HumanUpdatePacket;
 import org.apache.commons.lang3.NotImplementedException;
 
-public class FakePlayer extends PlayerEntity {
+public class FakePlayer extends ServerPlayerEntity {
 
     public FakePlayer(GMServer server, int id) {
         super(server, id);

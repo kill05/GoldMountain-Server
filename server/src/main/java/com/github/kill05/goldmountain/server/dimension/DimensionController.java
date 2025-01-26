@@ -1,6 +1,7 @@
 package com.github.kill05.goldmountain.server.dimension;
 
-import com.github.kill05.goldmountain.server.entity.Entity;
+import com.github.kill05.goldmountain.dimension.DimensionType;
+import com.github.kill05.goldmountain.server.entity.ServerEntity;
 import com.github.kill05.goldmountain.server.dimension.group.DimensionGroup;
 import com.github.kill05.goldmountain.server.dimension.group.MultiDimensionGroup;
 import com.github.kill05.goldmountain.server.dimension.group.SingleDimensionGroup;
@@ -16,7 +17,7 @@ public class DimensionController {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DimensionController.class);
     private final Map<DimensionType, DimensionGroup> dimensionMap;
-    private final Map<Entity, DimensionInfo> entityToMoveMap; // Value is the future dimension of the entity
+    private final Map<ServerEntity, DimensionInfo> entityToMoveMap; // Value is the future dimension of the entity
     private boolean tickedDimensions;
 
     public DimensionController() {
@@ -38,8 +39,8 @@ public class DimensionController {
         this.tickedDimensions = true;
 
         // Process entities that need to be moved to another dimension
-        for (Map.Entry<Entity, DimensionInfo> entry : entityToMoveMap.entrySet()) {
-            Entity entity = entry.getKey();
+        for (Map.Entry<ServerEntity, DimensionInfo> entry : entityToMoveMap.entrySet()) {
+            ServerEntity entity = entry.getKey();
             DimensionInfo info = entry.getValue();
             moveEntity(entity, info.type(), info.floor());
         }
@@ -48,7 +49,7 @@ public class DimensionController {
     }
 
 
-    public void markToMove(@NotNull Entity entity, @Nullable DimensionType type, int floor) {
+    public void markToMove(@NotNull ServerEntity entity, @Nullable DimensionType type, int floor) {
         if (tickedDimensions) {
             moveEntity(entity, type, floor);
             return;
@@ -57,7 +58,7 @@ public class DimensionController {
         entityToMoveMap.put(entity, new DimensionInfo(type, floor));
     }
 
-    private void moveEntity(@NotNull Entity entity, @Nullable DimensionType type, int floor) {
+    private void moveEntity(@NotNull ServerEntity entity, @Nullable DimensionType type, int floor) {
         if (type == null) {
             ServerDimension dimension = entity.getDimension();
             if (dimension == null) {

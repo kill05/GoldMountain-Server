@@ -1,6 +1,7 @@
 package com.github.kill05.goldmountain.server.dimension;
 
-import com.github.kill05.goldmountain.server.entity.Entity;
+import com.github.kill05.goldmountain.dimension.DimensionType;
+import com.github.kill05.goldmountain.server.entity.ServerEntity;
 import com.github.kill05.goldmountain.server.dimension.group.DimensionGroup;
 import org.apache.commons.lang3.Validate;
 
@@ -12,7 +13,7 @@ import java.util.function.Consumer;
 public class ServerDimension {
 
     //private final Map<Integer, ServerTile> tileIDMap;
-    private final Collection<Entity> entities;
+    private final Collection<ServerEntity> entities;
     private final DimensionGroup dimensionGroup;
     private final int floor;
     //private int ticksUntilReset;
@@ -29,12 +30,12 @@ public class ServerDimension {
 
     //todo: fix a bug where if a player disconnects, the entity is still there
     public void tick() {
-        for (Entity entity : entities) {
+        for (ServerEntity entity : entities) {
             entity.tick();
         }
     }
 
-    public void moveEntityUnsafe(Entity entity) {
+    public void moveEntityUnsafe(ServerEntity entity) {
         ServerDimension oldDimension = entity.getDimension();
         if(oldDimension != null) oldDimension.entities.remove(entity);
 
@@ -42,13 +43,13 @@ public class ServerDimension {
         entities.add(entity);
     }
 
-    public void removeEntityUnsafe(Entity entity) {
+    public void removeEntityUnsafe(ServerEntity entity) {
         entity.setDimensionUnsafe(null, 0);
         entities.remove(entity);
     }
 
 
-    public Collection<Entity> getEntities() {
+    public Collection<ServerEntity> getEntities() {
         return Collections.unmodifiableCollection(entities);
     }
 
@@ -56,8 +57,8 @@ public class ServerDimension {
         return entities.size();
     }
 
-    public void forEachEntity(Consumer<Entity> consumer) {
-        for (Entity entity : entities) {
+    public void forEachEntity(Consumer<ServerEntity> consumer) {
+        for (ServerEntity entity : entities) {
             consumer.accept(entity);
         }
     }

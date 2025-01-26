@@ -1,9 +1,9 @@
 package com.github.kill05.goldmountain.connection.packets.out;
 
-import com.github.kill05.goldmountain.server.dimension.DimensionType;
+import com.github.kill05.goldmountain.Identifiable;
 import com.github.kill05.goldmountain.connection.PacketBuffer;
-import com.github.kill05.goldmountain.proxy.Identifiable;
 import com.github.kill05.goldmountain.connection.packets.Packet;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 

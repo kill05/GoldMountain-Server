@@ -4,7 +4,7 @@ import com.github.kill05.goldmountain.server.GMServer;
 import com.github.kill05.goldmountain.server.commands.Command;
 import com.github.kill05.goldmountain.server.commands.senders.CommandSender;
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayer;
-import com.github.kill05.goldmountain.server.utils.Utils;
+import com.github.kill05.goldmountain.utils.Utils;
 
 public class PlayerInfoCommand extends Command {
 

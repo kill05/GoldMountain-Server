@@ -1,7 +1,7 @@
 package com.github.kill05.goldmountain.connection.packets.io;
 
-import com.github.kill05.goldmountain.server.dimension.entity.ShadowClone;
 import com.github.kill05.goldmountain.connection.PacketBuffer;
+import com.github.kill05.goldmountain.entity.ShadowClone;
 
 public class CloneUpdatePacket extends HumanUpdatePacket {
 

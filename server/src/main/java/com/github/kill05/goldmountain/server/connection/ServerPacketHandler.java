@@ -9,11 +9,11 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 
-public class PacketHandler extends ChannelDuplexHandler {
+public class ServerPacketHandler extends ChannelDuplexHandler {
 
     private final PlayerConnection connection;
 
-    public PacketHandler(PlayerConnection controller) {
+    public ServerPacketHandler(PlayerConnection controller) {
         this.connection = controller;
     }
 

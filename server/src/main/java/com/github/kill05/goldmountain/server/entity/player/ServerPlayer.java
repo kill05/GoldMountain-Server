@@ -1,6 +1,6 @@
 package com.github.kill05.goldmountain.server.entity.player;
 
-import com.github.kill05.goldmountain.server.dimension.DimensionType;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.connection.ConnectionController;
 import com.github.kill05.goldmountain.server.connection.PlayerConnection;
 import com.github.kill05.goldmountain.connection.packets.Packet;
@@ -10,7 +10,7 @@ import com.github.kill05.goldmountain.connection.packets.out.UpdateDimensionPack
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.Nullable;
 
-public class ServerPlayer extends PlayerEntity {
+public class ServerPlayer extends ServerPlayerEntity {
 
     private final PlayerConnection connection;
     //private ShadowClone shadowClone;
@@ -21,6 +21,7 @@ public class ServerPlayer extends PlayerEntity {
         this.connection = new PlayerConnection(this, channel);
     }
 
+    @Override
     public void tick() {
         super.tick();
         connection.tick();

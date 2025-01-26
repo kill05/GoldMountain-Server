@@ -1,4 +1,4 @@
-package com.github.kill05.goldmountain.server.utils;
+package com.github.kill05.goldmountain.utils;
 
 import org.joml.Vector2f;
 

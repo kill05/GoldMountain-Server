@@ -1,4 +1,7 @@
 package com.github.kill05.goldmountain.entity;
 
-public interface Player {
+public interface Player extends HumanEntity {
+
+    int getTotalLevel();
+
 }

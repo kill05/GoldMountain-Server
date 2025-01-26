@@ -4,7 +4,7 @@ import com.github.kill05.goldmountain.server.GMServer;
 import com.github.kill05.goldmountain.server.commands.Command;
 import com.github.kill05.goldmountain.server.commands.senders.CommandSender;
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayer;
-import com.github.kill05.goldmountain.server.dimension.tile.TileType;
+import com.github.kill05.goldmountain.dimension.TileType;
 import com.github.kill05.goldmountain.connection.packets.out.actions.ExecuteActionPacket;
 import org.joml.Vector2f;
 

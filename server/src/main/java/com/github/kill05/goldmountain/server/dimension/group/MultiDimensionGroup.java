@@ -1,8 +1,8 @@
 package com.github.kill05.goldmountain.server.dimension.group;
 
-import com.github.kill05.goldmountain.server.dimension.DimensionType;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.dimension.ServerDimension;
-import com.github.kill05.goldmountain.server.entity.Entity;
+import com.github.kill05.goldmountain.server.entity.ServerEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -49,8 +49,8 @@ public class MultiDimensionGroup extends DimensionGroup {
 
 
     @Override
-    public List<Entity> getEntities() {
-        List<Entity> entities = new ArrayList<>();
+    public List<ServerEntity> getEntities() {
+        List<ServerEntity> entities = new ArrayList<>();
 
         for (ServerDimension dimension : floorDimensionMap.values()) {
             entities.addAll(dimension.getEntities());

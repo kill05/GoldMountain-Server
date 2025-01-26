@@ -1,8 +1,8 @@
-package com.github.kill05.goldmountain.server.dimension;
+package com.github.kill05.goldmountain.dimension;
 
-import com.github.kill05.goldmountain.server.entity.Entity;
-import com.github.kill05.goldmountain.proxy.Identifiable;
-import com.github.kill05.goldmountain.server.utils.Utils;
+import com.github.kill05.goldmountain.Identifiable;
+import com.github.kill05.goldmountain.entity.Entity;
+import com.github.kill05.goldmountain.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;

@@ -1,6 +1,7 @@
-package com.github.kill05.goldmountain.server.dimension.tile;
+package com.github.kill05.goldmountain.dimension;
 
-import com.github.kill05.goldmountain.proxy.Identifiable;
+
+import com.github.kill05.goldmountain.Identifiable;
 
 @SuppressWarnings("unused")
 public enum TileType implements Identifiable<TileType> {

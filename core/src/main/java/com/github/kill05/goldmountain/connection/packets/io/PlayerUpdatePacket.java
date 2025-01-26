@@ -1,6 +1,6 @@
 package com.github.kill05.goldmountain.connection.packets.io;
 
-import com.github.kill05.goldmountain.server.dimension.entity.player.PlayerEntity;
+import com.github.kill05.goldmountain.entity.Player;
 import com.github.kill05.goldmountain.connection.PacketBuffer;
 
 import java.util.Arrays;
@@ -9,7 +9,7 @@ public class PlayerUpdatePacket extends HumanUpdatePacket {
 
     private int totalLevel;
 
-    public PlayerUpdatePacket(PlayerEntity player) {
+    public PlayerUpdatePacket(Player player) {
         super(player);
         this.totalLevel = player.getTotalLevel();
     }

@@ -4,7 +4,7 @@ import com.github.kill05.goldmountain.server.entity.player.ServerPlayer;
 import com.github.kill05.goldmountain.server.connection.PlayerConnection;
 import com.github.kill05.goldmountain.connection.packets.io.HumanUpdatePacket;
 
-public class ShadowClone extends HumanEntity {
+public class ShadowClone extends ServerHumanEntity {
 
     private final ServerPlayer owner;
 

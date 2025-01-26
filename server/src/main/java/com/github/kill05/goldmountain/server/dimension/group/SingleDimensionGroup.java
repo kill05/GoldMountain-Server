@@ -1,8 +1,8 @@
 package com.github.kill05.goldmountain.server.dimension.group;
 
-import com.github.kill05.goldmountain.server.dimension.DimensionType;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.dimension.ServerDimension;
-import com.github.kill05.goldmountain.server.entity.Entity;
+import com.github.kill05.goldmountain.server.entity.ServerEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class SingleDimensionGroup extends DimensionGroup {
     }
 
     @Override
-    public List<Entity> getEntities() {
+    public List<ServerEntity> getEntities() {
         return new ArrayList<>(dimension.getEntities());
     }
 

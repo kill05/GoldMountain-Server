@@ -1,8 +1,8 @@
 package com.github.kill05.goldmountain.connection.packets.out.actions;
 
-import com.github.kill05.goldmountain.server.dimension.tile.TileType;
 import com.github.kill05.goldmountain.connection.PacketBuffer;
 import com.github.kill05.goldmountain.connection.packets.Packet;
+import com.github.kill05.goldmountain.dimension.TileType;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 

@@ -4,7 +4,7 @@ import com.github.kill05.goldmountain.server.commands.CommandHandler;
 import com.github.kill05.goldmountain.server.dimension.DimensionController;
 import com.github.kill05.goldmountain.entity.PlayerCostume;
 import com.github.kill05.goldmountain.server.entity.player.FakePlayer;
-import com.github.kill05.goldmountain.server.entity.player.PlayerEntity;
+import com.github.kill05.goldmountain.server.entity.player.ServerPlayerEntity;
 import com.github.kill05.goldmountain.server.connection.ConnectionController;
 import com.github.kill05.goldmountain.connection.packets.io.PlayerUpdatePacket;
 import org.joml.Vector2f;
@@ -95,7 +95,7 @@ public class GMServer {
     }
 
     public void sendFakePlayer(int id, short speed, PlayerCostume costume, Vector2f loc1, Vector2f loc2, Vector2f loc3, Vector2f loc4) {
-        PlayerEntity fakePlayer = new FakePlayer(this, id);
+        ServerPlayerEntity fakePlayer = new FakePlayer(this, id);
         fakePlayer.setDisplayCostume(costume);
         fakePlayer.setSpeed(speed);
         fakePlayer.getCheckpoints()[0] = loc1;

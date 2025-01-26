@@ -1,13 +1,14 @@
 package com.github.kill05.goldmountain.server.entity;
 
+import com.github.kill05.goldmountain.entity.Entity;
 import com.github.kill05.goldmountain.server.GMServer;
-import com.github.kill05.goldmountain.server.dimension.DimensionType;
+import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.dimension.ServerDimension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 
-public abstract class Entity {
+public abstract class ServerEntity implements Entity {
 
     protected final GMServer server;
     protected DimensionType dimensionType;
@@ -16,19 +17,20 @@ public abstract class Entity {
     protected final Vector2f[] checkpoints;
     protected short speed;
 
-    public Entity(GMServer server) {
+    public ServerEntity(GMServer server) {
         this.server = server;
         this.checkpoints = new Vector2f[4];
     }
 
 
     public static boolean debug = false;
+
     public void tick() {
-        if(debug) System.out.printf("Ticked on tick %s!%n", server.getCurrentTick());
+        if (debug) System.out.printf("Ticked on tick %s!%n", server.getCurrentTick());
     }
 
     public @Nullable ServerDimension getDimension() {
-        if(dimensionType == null) return null;
+        if (dimensionType == null) return null;
         return server.getDimensionController().getGeneratedDimension(dimensionType, floor);
     }
 
@@ -37,11 +39,11 @@ public abstract class Entity {
     }
 
     public void setDimension(@NotNull DimensionType type, int floor, boolean force) {
-        if(!force && !type.isValidFloor(floor)) {
+        if (!force && !type.isValidFloor(floor)) {
             throw new IllegalArgumentException(String.format("Floor %s is not a valid floor for dimension %s.", floor, type));
         }
 
-        if(type == this.dimensionType && floor == this.floor) return;
+        if (type == this.dimensionType && floor == this.floor) return;
 
         // Mark entity to be moved at the end of the tick
         server.getDimensionController().markToMove(this, type, floor);
@@ -65,6 +67,7 @@ public abstract class Entity {
         setDimension(this.dimensionType, this.floor + 1);
     }
 
+    @Override
     public Vector2f getLocation() {
         return checkpoints[0];
     }
@@ -81,6 +84,7 @@ public abstract class Entity {
      *
      * @return the 4 checkpoints the entity will travel to to move towards its target
      */
+    @Override
     public Vector2f[] getCheckpoints() {
         return checkpoints;
     }

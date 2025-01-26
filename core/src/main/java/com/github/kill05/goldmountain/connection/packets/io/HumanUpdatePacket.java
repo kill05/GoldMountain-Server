@@ -1,10 +1,10 @@
 package com.github.kill05.goldmountain.connection.packets.io;
 
-import com.github.kill05.goldmountain.entity.PlayerCostume;
-import com.github.kill05.goldmountain.server.dimension.entity.HumanEntity;
-import com.github.kill05.goldmountain.server.dimension.entity.PlayerCostume;
+import com.github.kill05.goldmountain.Identifiable;
 import com.github.kill05.goldmountain.connection.PacketBuffer;
 import com.github.kill05.goldmountain.connection.packets.IOPacket;
+import com.github.kill05.goldmountain.entity.HumanEntity;
+import com.github.kill05.goldmountain.entity.PlayerCostume;
 import org.joml.Vector2f;
 
 public abstract class HumanUpdatePacket implements IOPacket {
