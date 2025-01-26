@@ -1,7 +1,7 @@
 package com.github.kill05.goldmountain.server.commands.registered;
 
 import com.github.kill05.goldmountain.Identifiable;
-import com.github.kill05.goldmountain.connection.packets.out.UpdateDimensionPacket;
+import com.github.kill05.goldmountain.connection.packet.packets.UpdateDimensionPacket;
 import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.GMServer;
 import com.github.kill05.goldmountain.server.commands.Command;

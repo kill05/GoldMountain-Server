@@ -4,9 +4,9 @@ import com.github.kill05.goldmountain.connection.ConnectionConstants;
 import com.github.kill05.goldmountain.server.GMServer;
 import com.github.kill05.goldmountain.dimension.DimensionType;
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayer;
-import com.github.kill05.goldmountain.connection.packets.Packet;
-import com.github.kill05.goldmountain.connection.packets.PacketRegistry;
-import com.github.kill05.goldmountain.connection.packets.out.AssignPlayerIdPacket;
+import com.github.kill05.goldmountain.connection.packet.Packet;
+import com.github.kill05.goldmountain.connection.packet.PacketRegistry;
+import com.github.kill05.goldmountain.connection.packet.packets.AssignPlayerIdPacket;
 import com.github.kill05.goldmountain.connection.pipeline.PacketDecoder;
 import com.github.kill05.goldmountain.connection.pipeline.PacketEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 
-public class ConnectionController {
+public class ServerConnection {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ConnectionController.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(ServerConnection.class);
     public static final int FIRST_PLAYER_ID = 1;
 
     private final GMServer server;
@@ -38,9 +38,9 @@ public class ConnectionController {
     private final EventLoopGroup bossGroup;
     private final EventLoopGroup workerGroup;
 
-    public ConnectionController(GMServer server) {
+    public ServerConnection(GMServer server) {
         this.server = server;
-        this.packetRegistry = new PacketRegistry();
+        this.packetRegistry = new ServerPacketRegistry();
         this.players = new ConcurrentHashMap<>();
 
         this.bossGroup = new NioEventLoopGroup();
@@ -51,7 +51,7 @@ public class ConnectionController {
                 .childHandler(new ChannelInitializer<>() {
                     @Override
                     protected void initChannel(Channel channel) throws Exception {
-                        ConnectionController controller = ConnectionController.this;
+                        ServerConnection controller = ServerConnection.this;
                         ServerPlayer player = new ServerPlayer(controller, (short) getAvailableId(), channel);
                         PlayerConnection connection = player.getConnection();
 

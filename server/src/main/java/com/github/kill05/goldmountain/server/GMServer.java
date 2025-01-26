@@ -5,8 +5,8 @@ import com.github.kill05.goldmountain.server.dimension.DimensionController;
 import com.github.kill05.goldmountain.entity.PlayerCostume;
 import com.github.kill05.goldmountain.server.entity.player.FakePlayer;
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayerEntity;
-import com.github.kill05.goldmountain.server.connection.ConnectionController;
-import com.github.kill05.goldmountain.connection.packets.io.PlayerUpdatePacket;
+import com.github.kill05.goldmountain.server.connection.ServerConnection;
+import com.github.kill05.goldmountain.connection.packet.packets.PlayerUpdatePacket;
 import org.joml.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public class GMServer {
     public static final Logger LOGGER = LoggerFactory.getLogger(GMServer.class);
 
     private Thread serverThread;
-    private ConnectionController connectionController;
+    private ServerConnection serverConnection;
     private DimensionController dimensionController;
     private CommandHandler commandHandler;
     private long currentTick;
@@ -35,7 +35,7 @@ public class GMServer {
         // Start server
         this.serverThread = new Thread(null, () -> {
             try {
-                this.connectionController = new ConnectionController(this);
+                this.serverConnection = new ServerConnection(this);
                 this.dimensionController = new DimensionController();
                 this.commandHandler = new CommandHandler(this);
             } catch (Exception e) {
@@ -84,7 +84,7 @@ public class GMServer {
         dimensionController.preTick();
 
         //commandHandler.executeCommand("/test2 0000 4368b73f");
-        connectionController.tick();
+        serverConnection.tick();
         dimensionController.tick();
         commandHandler.processInput();
     }
@@ -104,7 +104,7 @@ public class GMServer {
         fakePlayer.getCheckpoints()[3] = loc4;
 
         PlayerUpdatePacket packet = new PlayerUpdatePacket(fakePlayer);
-        connectionController.broadcastPacket(packet);
+        serverConnection.broadcastPacket(packet);
     }
 
 
@@ -112,7 +112,7 @@ public class GMServer {
         LOGGER.info("Closing server...");
 
         try {
-            connectionController.shutdown();
+            serverConnection.shutdown();
         } catch (InterruptedException e) {
             LOGGER.warn("Failed to gracefully shutdown server.", e);
         }
@@ -121,8 +121,8 @@ public class GMServer {
     }
 
 
-    public ConnectionController getConnectionController() {
-        return connectionController;
+    public ServerConnection getConnectionController() {
+        return serverConnection;
     }
 
     public DimensionController getDimensionController() {

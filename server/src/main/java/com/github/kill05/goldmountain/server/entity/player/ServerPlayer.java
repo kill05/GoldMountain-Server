@@ -1,12 +1,12 @@
 package com.github.kill05.goldmountain.server.entity.player;
 
 import com.github.kill05.goldmountain.dimension.DimensionType;
-import com.github.kill05.goldmountain.server.connection.ConnectionController;
+import com.github.kill05.goldmountain.server.connection.ServerConnection;
 import com.github.kill05.goldmountain.server.connection.PlayerConnection;
-import com.github.kill05.goldmountain.connection.packets.Packet;
-import com.github.kill05.goldmountain.connection.packets.io.HumanUpdatePacket;
-import com.github.kill05.goldmountain.connection.packets.io.PlayerUpdatePacket;
-import com.github.kill05.goldmountain.connection.packets.out.UpdateDimensionPacket;
+import com.github.kill05.goldmountain.connection.packet.Packet;
+import com.github.kill05.goldmountain.connection.packet.packets.HumanUpdatePacket;
+import com.github.kill05.goldmountain.connection.packet.packets.PlayerUpdatePacket;
+import com.github.kill05.goldmountain.connection.packet.packets.UpdateDimensionPacket;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public class ServerPlayer extends ServerPlayerEntity {
     //private ShadowClone shadowClone;
     private int totalLevel;
 
-    public ServerPlayer(ConnectionController controller, int id, Channel channel) {
+    public ServerPlayer(ServerConnection controller, int id, Channel channel) {
         super(controller.getServer(), id);
         this.connection = new PlayerConnection(this, channel);
     }

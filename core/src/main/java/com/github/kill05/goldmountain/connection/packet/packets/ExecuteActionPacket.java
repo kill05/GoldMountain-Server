@@ -1,7 +1,7 @@
-package com.github.kill05.goldmountain.connection.packets.out.actions;
+package com.github.kill05.goldmountain.connection.packet.packets;
 
 import com.github.kill05.goldmountain.connection.PacketBuffer;
-import com.github.kill05.goldmountain.connection.packets.Packet;
+import com.github.kill05.goldmountain.connection.packet.Packet;
 import com.github.kill05.goldmountain.dimension.TileType;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
@@ -28,12 +28,19 @@ public record ExecuteActionPacket(
         int id
 ) implements Packet {
 
-    public static final BiConsumer<PacketBuffer, ExecuteActionPacket> ENCODER = (serializer, packet) -> {
-        serializer.writeLocation(packet.location());
-        serializer.writeShortLE(packet.actionCode());
-        serializer.writeIntLE(packet.id());
+    public static final BiConsumer<PacketBuffer, ExecuteActionPacket> ENCODER = (buf, packet) -> {
+        buf.writeLocation(packet.location());
+        buf.writeShortLE(packet.actionCode());
+        buf.writeIntLE(packet.id());
     };
 
+    public ExecuteActionPacket(PacketBuffer buf) {
+        this(
+                buf.readLocation(),
+                buf.readUnsignedShortLE(),
+                buf.readIntLE()
+        );
+    }
 
     /**
      * Constructs an action packet that shows a tile to the client at the given location

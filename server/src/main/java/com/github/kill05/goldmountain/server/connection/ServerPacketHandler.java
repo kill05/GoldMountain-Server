@@ -1,9 +1,9 @@
 package com.github.kill05.goldmountain.server.connection;
 
 import com.github.kill05.goldmountain.server.GMServer;
-import com.github.kill05.goldmountain.connection.packets.Packet;
-import com.github.kill05.goldmountain.connection.packets.io.DigTilePacket;
-import com.github.kill05.goldmountain.connection.packets.io.PlayerUpdatePacket;
+import com.github.kill05.goldmountain.connection.packet.Packet;
+import com.github.kill05.goldmountain.connection.packet.packets.DigTilePacket;
+import com.github.kill05.goldmountain.connection.packet.packets.PlayerUpdatePacket;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 

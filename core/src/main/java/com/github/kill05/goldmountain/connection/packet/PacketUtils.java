@@ -1,4 +1,4 @@
-package com.github.kill05.goldmountain.connection.packets;
+package com.github.kill05.goldmountain.connection.packet;
 
 import com.github.kill05.goldmountain.connection.PacketBuffer;
 import io.netty.buffer.ByteBuf;

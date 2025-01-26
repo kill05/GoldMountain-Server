@@ -4,9 +4,9 @@ import com.github.kill05.goldmountain.server.GMServer;
 import com.github.kill05.goldmountain.server.dimension.ServerDimension;
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayerEntity;
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayer;
-import com.github.kill05.goldmountain.connection.packets.Packet;
-import com.github.kill05.goldmountain.connection.packets.io.CloneUpdatePacket;
-import com.github.kill05.goldmountain.connection.packets.io.PlayerUpdatePacket;
+import com.github.kill05.goldmountain.connection.packet.Packet;
+import com.github.kill05.goldmountain.connection.packet.packets.CloneUpdatePacket;
+import com.github.kill05.goldmountain.connection.packet.packets.PlayerUpdatePacket;
 import io.netty.channel.Channel;
 
 public class PlayerConnection {

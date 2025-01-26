@@ -4,7 +4,7 @@ import com.github.kill05.goldmountain.entity.HumanEntity;
 import com.github.kill05.goldmountain.entity.PlayerCostume;
 import com.github.kill05.goldmountain.server.GMServer;
 import com.github.kill05.goldmountain.server.connection.PlayerConnection;
-import com.github.kill05.goldmountain.connection.packets.io.HumanUpdatePacket;
+import com.github.kill05.goldmountain.connection.packet.packets.HumanUpdatePacket;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class ServerHumanEntity extends ServerEntity implements HumanEntity {

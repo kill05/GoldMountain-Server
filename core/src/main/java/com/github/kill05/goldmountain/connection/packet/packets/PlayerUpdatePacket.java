@@ -1,4 +1,4 @@
-package com.github.kill05.goldmountain.connection.packets.io;
+package com.github.kill05.goldmountain.connection.packet.packets;
 
 import com.github.kill05.goldmountain.entity.Player;
 import com.github.kill05.goldmountain.connection.PacketBuffer;
@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class PlayerUpdatePacket extends HumanUpdatePacket {
 
-    private int totalLevel;
+    private long totalLevel; // Unsigned int
 
     public PlayerUpdatePacket(Player player) {
         super(player);
@@ -21,18 +21,18 @@ public class PlayerUpdatePacket extends HumanUpdatePacket {
 
     @Override
     public void decodeLevel(PacketBuffer serializer) {
-        this.totalLevel = serializer.readIntLE();
+        this.totalLevel = serializer.readUnsignedIntLE();
     }
 
     @Override
     public void encodeLevel(PacketBuffer serializer) {
-        serializer.writeIntLE(totalLevel);
+        serializer.writeIntLE((int) totalLevel);
     }
 
     @Override
     public void decodeEnd(PacketBuffer serializer) {
         serializer.readInt();   // ignored, always 0000_0000
-        serializer.readShort(); // ignored, always e803 (which is 1000 in base 10, maybe there's a reason) (could be the game version/protocol version?)
+        serializer.readShort(); // ignored, always e803 (which is 1000 in base 10, maybe there's a reason)
     }
 
     @Override
@@ -41,7 +41,13 @@ public class PlayerUpdatePacket extends HumanUpdatePacket {
         serializer.writeShort(0xe803);
     }
 
-    public int totalLevel() {
+    /**
+     * Get the total level of the player.
+     * In the game, it is used to adjust money gain (mentioned in the multiplayer menu)
+     *
+     * @return the total level (unsigned int)
+     */
+    public long totalLevel() {
         return totalLevel;
     }
 

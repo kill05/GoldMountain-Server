@@ -1,18 +1,18 @@
-package com.github.kill05.goldmountain.connection.packets.io;
+package com.github.kill05.goldmountain.connection.packet.packets;
 
 import com.github.kill05.goldmountain.Identifiable;
 import com.github.kill05.goldmountain.connection.PacketBuffer;
-import com.github.kill05.goldmountain.connection.packets.IOPacket;
+import com.github.kill05.goldmountain.connection.packet.Packet;
 import com.github.kill05.goldmountain.entity.HumanEntity;
 import com.github.kill05.goldmountain.entity.PlayerCostume;
 import org.joml.Vector2f;
 
-public abstract class HumanUpdatePacket implements IOPacket {
+public abstract class HumanUpdatePacket implements Packet {
 
     protected final int entityId;
 
     protected final Vector2f[] checkpoints;
-    protected final short speed;
+    protected final int speed;
 
     protected final int unknown_0;
     protected final PlayerCostume costume;
@@ -28,14 +28,14 @@ public abstract class HumanUpdatePacket implements IOPacket {
 
         this.unknown_0 = 0xffff_ffff; // change once I understand what this does
         this.costume = human.getDisplayCostume();
-        this.targetTileId = 0xffff_ffff; // change once I understand what this does
+        this.targetTileId = 0xffff_ffff; // change to target tile id
 
         this.unknown_2 = 0; // change once I understand what this does
         this.unknown_3 = 0; // change once I understand what this does
     }
 
     public HumanUpdatePacket(PacketBuffer serializer) {
-        entityId = serializer.readShortLE();
+        entityId = serializer.readUnsignedShortLE();
         decodeLevel(serializer);
 
         checkpoints = new Vector2f[4];
@@ -43,11 +43,11 @@ public abstract class HumanUpdatePacket implements IOPacket {
             checkpoints[i] = serializer.readLocation();
         }
 
-        speed = serializer.readShortLE();
+        speed = serializer.readUnsignedShortLE();
 
-        unknown_0 = serializer.readInt();
+        unknown_0 = serializer.readIntLE();
         costume = Identifiable.fromIdOrUnknown(PlayerCostume.class, serializer.readShortLE());
-        targetTileId = serializer.readInt();
+        targetTileId = serializer.readIntLE();
 
         decodeEnd(serializer);
 
@@ -63,27 +63,27 @@ public abstract class HumanUpdatePacket implements IOPacket {
         }
     }
 
-    public void encode(PacketBuffer serializer) {
-        serializer.writeShortLE(entityId);
-        encodeLevel(serializer);
+    public void encode(PacketBuffer buf) {
+        buf.writeShortLE(entityId);
+        encodeLevel(buf);
 
         for (Vector2f checkpoint : checkpoints) {
-            serializer.writeLocation(checkpoint);
+            buf.writeLocation(checkpoint);
         }
 
-        serializer.writeShortLE(speed);
+        buf.writeShortLE(speed);
 
-        serializer.writeInt(unknown_0);
-        serializer.writeShortLE(getCostume().getId());
-        serializer.writeInt(targetTileId);
+        buf.writeInt(unknown_0);
+        buf.writeShortLE(getCostume().getId());
+        buf.writeInt(targetTileId);
 
-        encodeEnd(serializer);
+        encodeEnd(buf);
 
-        //TODO: encode only if last packet in a multi packet
-        serializer.writeByte(0x0d);
-        serializer.writeByte(unknown_2);
-        serializer.writeShort(unknown_3);
-        serializer.writeByte(0x00);
+        //TODO: encode only if last packet is a multi packet
+        buf.writeByte(0x0d);
+        buf.writeByte(unknown_2);
+        buf.writeShort(unknown_3);
+        buf.writeByte(0x00);
     }
 
 
@@ -108,7 +108,7 @@ public abstract class HumanUpdatePacket implements IOPacket {
         return checkpoints;
     }
 
-    public short getSpeed() {
+    public int getSpeed() {
         return speed;
     }
 

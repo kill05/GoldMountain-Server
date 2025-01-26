@@ -19,8 +19,8 @@ public class GMProxy {
     public GMProxy() {
         long time = System.currentTimeMillis();
 
+        this.connection = new ProxyConnection(this);
         this.frame = new ProxyFrame();
-        this.connection = new ProxyConnection();
 
         frame.setVisible(true);
 

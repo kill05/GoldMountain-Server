@@ -2,9 +2,9 @@ package com.github.kill05.goldmountain.connection.pipeline;
 
 import com.github.kill05.goldmountain.connection.ConnectionConstants;
 import com.github.kill05.goldmountain.connection.PacketBuffer;
-import com.github.kill05.goldmountain.connection.packets.IOPacket;
-import com.github.kill05.goldmountain.connection.packets.PacketRegistry;
-import com.github.kill05.goldmountain.connection.packets.PacketUtils;
+import com.github.kill05.goldmountain.connection.packet.Packet;
+import com.github.kill05.goldmountain.connection.packet.PacketRegistry;
+import com.github.kill05.goldmountain.connection.packet.PacketUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -28,6 +28,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
         if (byteBuf.readableBytes() < 7) return;
 
+        // Check if the first bytes are the magic bytes. If not, that means the current buffer is invalid and has to be cleared
         if (byteBuf.getShort(byteBuf.readerIndex()) != ConnectionConstants.MAGIC_BYTES) {
             LOGGER.warn("Found invalid data in the cumulative buffer ({}) ! Clearing...", ByteBufUtil.hexDump(byteBuf));
             byteBuf.clear();
@@ -41,16 +42,16 @@ public class PacketDecoder extends ByteToMessageDecoder {
 
         try {
             PacketBuffer serializer = new PacketBuffer(byteBuf.slice(7, length - 7));
-            IOPacket packet = packetRegistry.decodePacket(id, serializer);
+            Packet packet = packetRegistry.decodePacket(id, serializer);
             out.add(packet);
 
             while (serializer.isReadable()) {
                 try {
-                    IOPacket subPacket = packetRegistry.decodePacket(serializer.readByte(), serializer);
+                    Packet subPacket = packetRegistry.decodePacket(serializer.readByte(), serializer);
                     out.add(subPacket);
                 } catch (IOException e) {
                     serializer.readerIndex(serializer.readerIndex() - 1);
-                    throw new IOException("Incomplete data stream consumption. Extra data: " + ByteBufUtil.hexDump(serializer));
+                    throw new IOException(String.format("Incomplete data stream consumption. (id: %s, data: %s)", id, ByteBufUtil.hexDump(serializer, 0, serializer.maxCapacity())), e);
                 }
             }
         } finally {

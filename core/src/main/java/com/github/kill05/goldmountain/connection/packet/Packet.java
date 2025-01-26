@@ -1,4 +1,4 @@
-package com.github.kill05.goldmountain.connection.packets;
+package com.github.kill05.goldmountain.connection.packet;
 
 import org.intellij.lang.annotations.Identifier;
 

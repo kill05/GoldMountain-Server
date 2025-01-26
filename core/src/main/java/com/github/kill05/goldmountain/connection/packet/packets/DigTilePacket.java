@@ -1,11 +1,11 @@
-package com.github.kill05.goldmountain.connection.packets.io;
+package com.github.kill05.goldmountain.connection.packet.packets;
 
 import com.github.kill05.goldmountain.connection.PacketBuffer;
-import com.github.kill05.goldmountain.connection.packets.IOPacket;
+import com.github.kill05.goldmountain.connection.packet.Packet;
 
 import java.util.function.BiConsumer;
 
-public record DigTilePacket(int tileId, short amount, int damage) implements IOPacket {
+public record DigTilePacket(int tileId, short amount, int damage) implements Packet {
 
     public static final BiConsumer<PacketBuffer, DigTilePacket> ENCODER = (serializer, packet) -> {
         serializer.writeIntLE(packet.tileId());

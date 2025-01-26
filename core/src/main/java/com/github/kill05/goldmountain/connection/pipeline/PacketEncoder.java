@@ -2,10 +2,10 @@ package com.github.kill05.goldmountain.connection.pipeline;
 
 import com.github.kill05.goldmountain.connection.ConnectionConstants;
 import com.github.kill05.goldmountain.connection.PacketBuffer;
-import com.github.kill05.goldmountain.connection.packets.Packet;
-import com.github.kill05.goldmountain.connection.packets.PacketRegistry;
-import com.github.kill05.goldmountain.connection.packets.PacketUtils;
-import com.github.kill05.goldmountain.connection.packets.out.RawPacket;
+import com.github.kill05.goldmountain.connection.packet.Packet;
+import com.github.kill05.goldmountain.connection.packet.PacketRegistry;
+import com.github.kill05.goldmountain.connection.packet.PacketUtils;
+import com.github.kill05.goldmountain.connection.packet.packets.RawPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;

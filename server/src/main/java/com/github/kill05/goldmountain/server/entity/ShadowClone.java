@@ -2,7 +2,7 @@ package com.github.kill05.goldmountain.server.entity;
 
 import com.github.kill05.goldmountain.server.entity.player.ServerPlayer;
 import com.github.kill05.goldmountain.server.connection.PlayerConnection;
-import com.github.kill05.goldmountain.connection.packets.io.HumanUpdatePacket;
+import com.github.kill05.goldmountain.connection.packet.packets.HumanUpdatePacket;
 
 public class ShadowClone extends ServerHumanEntity {
 

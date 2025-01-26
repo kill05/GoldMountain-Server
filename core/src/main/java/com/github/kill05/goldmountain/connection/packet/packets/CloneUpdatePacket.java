@@ -1,11 +1,11 @@
-package com.github.kill05.goldmountain.connection.packets.io;
+package com.github.kill05.goldmountain.connection.packet.packets;
 
 import com.github.kill05.goldmountain.connection.PacketBuffer;
 import com.github.kill05.goldmountain.entity.ShadowClone;
 
 public class CloneUpdatePacket extends HumanUpdatePacket {
 
-    private int ownerId;
+    private int ownerId; // Unsigned short
 
     public CloneUpdatePacket(ShadowClone clone) {
         super(clone);
@@ -19,7 +19,7 @@ public class CloneUpdatePacket extends HumanUpdatePacket {
 
     @Override
     public void decodeEnd(PacketBuffer serializer) {
-        this.ownerId = serializer.readShortLE();
+        this.ownerId = serializer.readUnsignedShortLE();
     }
 
     @Override

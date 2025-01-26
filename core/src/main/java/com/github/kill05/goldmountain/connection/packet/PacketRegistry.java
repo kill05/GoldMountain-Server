@@ -1,13 +1,6 @@
-package com.github.kill05.goldmountain.connection.packets;
+package com.github.kill05.goldmountain.connection.packet;
 
 import com.github.kill05.goldmountain.connection.PacketBuffer;
-import com.github.kill05.goldmountain.connection.packets.io.CloneUpdatePacket;
-import com.github.kill05.goldmountain.connection.packets.io.DigTilePacket;
-import com.github.kill05.goldmountain.connection.packets.io.PlayerUpdatePacket;
-import com.github.kill05.goldmountain.connection.packets.out.AssignPlayerIdPacket;
-import com.github.kill05.goldmountain.connection.packets.out.CreateStaircasePacket;
-import com.github.kill05.goldmountain.connection.packets.out.UpdateDimensionPacket;
-import com.github.kill05.goldmountain.connection.packets.out.actions.ExecuteActionPacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,27 +18,6 @@ public class PacketRegistry {
     public PacketRegistry() {
         this.packetMap = new HashMap<>();
         this.packetClassMap = new HashMap<>();
-
-        registerIOPacket(0x01, PlayerUpdatePacket.class,
-                (packetSerializer, packet) -> packet.encode(packetSerializer),
-                PlayerUpdatePacket::new
-        );
-
-        registerIOPacket(0x02, CloneUpdatePacket.class,
-                (packetSerializer, packet) -> packet.encode(packetSerializer),
-                CloneUpdatePacket::new
-        );
-
-        registerIOPacket(0x03, DigTilePacket.class,
-                DigTilePacket.ENCODER,
-                DigTilePacket::new
-        );
-
-
-        registerOutboundPacket(0x04, UpdateDimensionPacket.class, UpdateDimensionPacket.ENCODER);
-        registerOutboundPacket(0x05, ExecuteActionPacket.class, ExecuteActionPacket.ENCODER);
-        registerOutboundPacket(0x06, CreateStaircasePacket.class, CreateStaircasePacket.ENCODER);
-        registerOutboundPacket(0x07, AssignPlayerIdPacket.class, AssignPlayerIdPacket.ENCODER);
     }
 
 
@@ -58,7 +30,7 @@ public class PacketRegistry {
      * @param decoder the deserializer
      * @param <T> the packet type
      */
-    public <T extends IOPacket> void registerIOPacket(
+    public <T extends Packet> void registerIOPacket(
             int id,
             @NotNull Class<T> clazz,
             @NotNull BiConsumer<PacketBuffer, T> encoder,
@@ -146,7 +118,7 @@ public class PacketRegistry {
      * @return the packet object
      * @throws IOException if an error occurred while decoding the packet
      */
-    public IOPacket decodePacket(int id, PacketBuffer buf) throws IOException {
+    public Packet decodePacket(int id, PacketBuffer buf) throws IOException {
         try {
             Function<PacketBuffer, ?> decoder = getRegisteredPacket(id).decoder();
 
@@ -154,7 +126,7 @@ public class PacketRegistry {
                 throw new IllegalArgumentException(String.format("Packet '%02x' is not an inbound packet.", id));
             }
 
-            return (IOPacket) decoder.apply(buf);
+            return (Packet) decoder.apply(buf);
         } catch (Exception e) {
             throw new IOException("Failed to decode packet.", e);
         }
