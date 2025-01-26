@@ -14,7 +14,7 @@ public class ServerPlayer extends ServerPlayerEntity {
 
     private final PlayerConnection connection;
     //private ShadowClone shadowClone;
-    private int totalLevel;
+    private long totalLevel;
 
     public ServerPlayer(ServerConnection controller, int id, Channel channel) {
         super(controller.getServer(), id);
@@ -97,7 +97,7 @@ public class ServerPlayer extends ServerPlayerEntity {
     }
 
     @Override
-    public int getTotalLevel() {
+    public long getTotalLevel() {
         return totalLevel;
     }
 

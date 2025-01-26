@@ -4,7 +4,7 @@ public interface HumanEntity extends Entity {
 
     int getId();
 
-    short getSpeed();
+    int getSpeed();
 
     PlayerCostume getCostume();
 

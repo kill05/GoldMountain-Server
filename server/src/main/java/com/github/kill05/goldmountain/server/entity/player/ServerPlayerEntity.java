@@ -14,9 +14,6 @@ public abstract class ServerPlayerEntity extends ServerHumanEntity implements Pl
     }
 
     @Override
-    public abstract int getTotalLevel();
-
-    @Override
     public int getId() {
         return id;
     }

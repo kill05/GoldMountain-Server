@@ -23,7 +23,7 @@ public class FakePlayer extends ServerPlayerEntity {
     }
 
     @Override
-    public int getTotalLevel() {
+    public long getTotalLevel() {
         return 0;
     }
 }

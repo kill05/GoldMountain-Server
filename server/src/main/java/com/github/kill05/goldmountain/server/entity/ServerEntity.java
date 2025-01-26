@@ -15,7 +15,7 @@ public abstract class ServerEntity implements Entity {
     protected int floor;
 
     protected final Vector2f[] checkpoints;
-    protected short speed;
+    protected int speed;
 
     public ServerEntity(GMServer server) {
         this.server = server;
@@ -89,8 +89,7 @@ public abstract class ServerEntity implements Entity {
         return checkpoints;
     }
 
-
-    public short getSpeed() {
+    public int getSpeed() {
         return speed;
     }
 
