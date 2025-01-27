@@ -14,7 +14,7 @@ public abstract class HumanUpdatePacket implements Packet {
     protected final Vector2f[] checkpoints;
     protected final int speed;
 
-    protected final int unknown_0;
+    protected final int unknown_0; // something about mining animations
     protected final PlayerCostume costume;
     protected final int targetTileId;
     protected final byte unknown_2;

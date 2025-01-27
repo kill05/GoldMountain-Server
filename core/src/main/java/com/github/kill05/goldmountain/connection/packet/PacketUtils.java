@@ -12,10 +12,10 @@ public final class PacketUtils {
     }
 
     public static int getPacketLength(ByteBuf byteBuf) {
-        return byteBuf.getShortLE( byteBuf.readerIndex() + 2);
+        return byteBuf.getIntLE( byteBuf.readerIndex() + 2);
     }
 
     public static void encodePacketLength(PacketBuffer serializer) {
-        serializer.setShortLE(2, serializer.readableBytes());
+        serializer.setIntLE(2, serializer.readableBytes());
     }
 }

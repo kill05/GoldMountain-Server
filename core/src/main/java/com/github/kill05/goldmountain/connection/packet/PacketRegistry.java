@@ -20,7 +20,6 @@ public class PacketRegistry {
         this.packetClassMap = new HashMap<>();
     }
 
-
     /**
      * Registers a packet that is both inbound and outbound.
      *
@@ -87,7 +86,7 @@ public class PacketRegistry {
         RegisteredPacket<?> registeredPacket = packetMap.get(id);
 
         if (registeredPacket == null) {
-            throw new IllegalArgumentException(String.format("Invalid packet id: '%02x'", id));
+            throw new IllegalArgumentException(String.format("Invalid packet id: '0x%02x'", id));
         }
 
         return registeredPacket;
@@ -123,7 +122,7 @@ public class PacketRegistry {
             Function<PacketBuffer, ?> decoder = getRegisteredPacket(id).decoder();
 
             if (decoder == null) {
-                throw new IllegalArgumentException(String.format("Packet '%02x' is not an inbound packet.", id));
+                throw new IllegalArgumentException(String.format("Packet '0x%02x' is not an inbound packet.", id));
             }
 
             return (Packet) decoder.apply(buf);

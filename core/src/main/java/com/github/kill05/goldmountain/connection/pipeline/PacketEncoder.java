@@ -28,7 +28,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         try {
             PacketBuffer packetBuffer = new PacketBuffer(byteBuf);
             packetBuffer.writeShort(ConnectionConstants.MAGIC_BYTES);
-            packetBuffer.writeInt(0); // the first 2 bytes will be replaced with length
+            packetBuffer.writeInt(0); // will be replaced with packet length
 
             if (packet instanceof RawPacket rawPacket) {
                 packetBuffer.writeInt(rawPacket.packetId());
